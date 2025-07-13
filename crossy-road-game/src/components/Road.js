@@ -6,7 +6,7 @@ export function Road(rowIndex) {
     road.position.y = rowIndex * tileSize; // position based on row index
 
     const foundation = new THREE.Mesh(
-        new THREE.BoxGeometry(tilesPerRow * tileSize, tileSize), // width, length, depth/height
+        new THREE.BoxGeometry(tilesPerRow * tileSize, tileSize, 3), // width, length, depth/height
         new THREE.MeshLambertMaterial({
             color: 0x454a59,
         })

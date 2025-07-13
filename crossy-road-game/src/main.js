@@ -2,11 +2,13 @@ import * as THREE from 'three';
 import './style.css'
 import Renderer from "./components/Renderer.js";
 import Camera from "./components/Camera.js";
-import Player from "./components/Player.js";
+import {player} from "./components/Player.js";
 import {map, initializeMap} from "./components/Map.js";
 import { DirectionalLight } from './components/DirectionalLight.js';
+import { animateVehicles } from './animateVehicles.js';
+import { animatePlayer } from './animatePlayer.js';
+import './collectUserInput.js'; 
 const scene = new THREE.Scene();
-const player = Player();
 scene.add(player);
 scene.add(map);
 // lighting
@@ -18,7 +20,7 @@ const directionalLight = new DirectionalLight(); // white light
 scene.add(directionalLight);
 
 const camera = Camera();
-scene.add(camera);
+//scene.add(camera);
 // call before rendering or else empty map
 initializeGame();
 
@@ -46,11 +48,10 @@ window.addEventListener('resize', () => {
 });
 
 const renderer = Renderer();
-
+renderer.setAnimationLoop(animate);
 // Animation loop
 function animate() {
-    requestAnimationFrame(animate);
+    animateVehicles();
+    animatePlayer(player);
     renderer.render(scene, camera);
 }
-
-animate();

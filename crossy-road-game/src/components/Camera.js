@@ -20,7 +20,7 @@ export default function Camera(){
     // set z axis as the axis pointing upwards
     camera.up.set(0,0,1); 
     // 300 right, 300 behind, 300 above ground
-    // this causes camera to be at a 45 degree angle
+    // this (and lookAt) causes camera to be at a 45 degree angle
     camera.position.set(300, -300, 300);
     camera.lookAt(0, 0, 0);
     return camera;

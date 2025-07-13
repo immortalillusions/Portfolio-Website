@@ -2,3 +2,7 @@ body {
   margin: 0;
   display: flex;
 }
+
+.rotate-left { transform: rotate(-90deg); }
+
+.rotate-right { transform: rotate(90deg); }
