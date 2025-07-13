@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { tileSize } from '../constants.js';
 
 export const player = Player();
 
@@ -31,10 +32,10 @@ function Player() {
     return player;
 }
 
-// for moving player
+// for moving player - now using actual coordinates
 export const position = {
-    currentRow: 0,
-    currentTile: 0
+    currentX: 0,
+    currentY: 0
 }
 
 // movements don't execute immediately; need queue
@@ -51,8 +52,8 @@ export function queueMove(direction){
 // CHANGE LATER TO PIXELS
 export function stepCompleted() {
     const direction = movesQueue.shift();
-    if (direction == "forward") position.currentRow++;
-    else if (direction == "backward") position.currentRow--;
-    else if (direction == "left") position.currentTile--;
-    else if (direction == "right") position.currentTile++;
+    if (direction == "forward") position.currentY += tileSize;
+    else if (direction == "backward") position.currentY -= tileSize;
+    else if (direction == "left") position.currentX -= tileSize;
+    else if (direction == "right") position.currentX += tileSize;
 }

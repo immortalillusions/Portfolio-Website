@@ -1,10 +1,11 @@
 import * as THREE from "three";
-import { tileSize, setShadowsRecursively } from "../constants.js";
+import { setShadowsRecursively } from "../constants.js";
 import { Wheel } from "./Wheel.js";
 
-export function Truck(initialTileIndex, direction, color) {
+export function Truck(x, y, direction, color) {
     const truck = new THREE.Group();
-    truck.position.x = initialTileIndex * tileSize;
+    truck.position.x = x;
+    truck.position.y = y;
     if(!direction) truck.rotation.z = Math.PI; // rotate 180 degrees if moving left
     const cargo = new THREE.Mesh(
         new THREE.BoxGeometry(80, 30, 30),

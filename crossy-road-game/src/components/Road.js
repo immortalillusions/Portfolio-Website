@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import {tilesPerRow, tileSize} from '../constants.js';
 
-export function Road(rowIndex) {
+export function Road(yPosition) {
     const road = new THREE.Group();
-    road.position.y = rowIndex * tileSize; // position based on row index
+    road.position.y = yPosition;
 
     const foundation = new THREE.Mesh(
         new THREE.BoxGeometry(tilesPerRow * tileSize, tileSize, 3), // width, length, depth/height

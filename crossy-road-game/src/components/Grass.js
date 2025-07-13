@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import {tilesPerRow, tileSize} from '../constants.js';
 
-export function Grass(rowIndex) {
+export function Grass(yPosition) {
     const grass = new THREE.Group();
-    grass.position.y = rowIndex * tileSize; // position based on row index
+    grass.position.y = yPosition; // y position
 
     const foundation = new THREE.Mesh(
         // has slight height vs roads that are flat

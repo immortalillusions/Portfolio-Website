@@ -1,10 +1,12 @@
 import * as THREE from 'three';
-import { tileSize, setShadowsRecursively } from '../constants';
+import { setShadowsRecursively } from '../constants';
 
-export function Tree(tileIndex, height) {
+export function Tree(x, y, height) {
     const tree = new THREE.Group();
-    // x is right/left
-    tree.position.x = tileIndex * tileSize;
+    tree.position.x = x; // x is right/left
+    // Note if tree is part of a group (e.g. grass), y is relative to that group SO just set y = 0
+    tree.position.y = y;
+    
     const trunk = new THREE.Mesh(
         new THREE.BoxGeometry(15,15,20),
         new THREE.MeshLambertMaterial({

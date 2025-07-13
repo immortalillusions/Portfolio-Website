@@ -24,8 +24,8 @@ export function animatePlayer(player) {
 }
 // use linear interpolation to move / rotate player smoothly depending on the progress
 function setPosition(progress, player) {
-    const startX = position.currentTile * tileSize;
-    const startY = position.currentRow * tileSize;
+    const startX = position.currentX;
+    const startY = position.currentY;
     // endX, endY tracks the ending position
     let endX = startX;
     let endY = startY;
