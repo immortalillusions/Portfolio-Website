@@ -5,7 +5,7 @@ import {Road} from './Road.js';
 import {Car} from './Car.js';
 import {Truck} from './Truck.js';
 import {Card} from './Card.js';
-import { tileSize } from '../constants.js';
+import { tileSize, bottomMap } from '../constants.js';
 import { Pokeball } from './Pokeball.js';
 
 export const metadata = [
@@ -14,7 +14,7 @@ export const metadata = [
         direction: true,
         speed: 50,
         vehicles: [{initialX: -3 * tileSize, color: 0xff0000}],
-        y: 1 * tileSize
+        y: -38 * tileSize
     },
     {
         type: "forest",
@@ -23,7 +23,7 @@ export const metadata = [
             {x: 2 * tileSize, height: 20},
             {x: 1 * tileSize, height: 50}
         ],
-        y: 2 * tileSize
+        y: -39 * tileSize
     },
     {
         type: "car",
@@ -44,11 +44,13 @@ export const metadata = [
         type: "card",
         card: {
             x: -2 * tileSize,
+            cardWidth: 200,
+            cardHeight: 150,
             icon: Pokeball(),
             rightText: "Guess and catch\nPokemon!\nMade with PokeAPI",
             bottomLeftText: "PokiGuess\n2020-2023\nFull-time"
         },
-        y: -1 * tileSize
+        y: -40 * tileSize
     }
 ];
 
@@ -56,7 +58,7 @@ export const map = new THREE.Group();
 
 export function initializeMap(){
     // Create grass rows before player (negative Y values)
-    for (let i = 0; i > -5; i--) {
+    for (let i = 0; i > bottomMap; i--) {
         const grass = Grass(i * tileSize);
         map.add(grass);
     }
@@ -67,7 +69,7 @@ export function initializeMap(){
 export function addRows(){
     metadata.forEach((row) => {
         if (row.type === "card") {
-            const card = Card(row.card.x, row.y, row.card.icon, row.card.rightText, row.card.bottomLeftText);
+            const card = Card(row.card.x, row.y, row.card.cardWidth, row.card.cardHeight, row.card.icon, row.card.rightText, row.card.bottomLeftText);
             map.add(card);
         }
 

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {movesQueue, stepCompleted, position} from "./components/Player.js";
 import { tileSize } from "./constants.js";
+import { endsUpInValidPosition } from './utilities/endsUpInValidPosition.js';
 // do not start clock immediately
 // clock is used to animate player movement; it is PER step
 const moveClock = new THREE.Clock(false);
@@ -13,6 +14,13 @@ export function animatePlayer(player, camera) {
     const stepTime = 0.2; // seconds per step
     // progress is % completed of the current step
     const progress = Math.min(1, moveClock.getElapsedTime() / stepTime);
+
+    if (!endsUpInValidPosition(camera)) {
+        movesQueue.length = 0; // Clear the array without reassigning
+        moveClock.stop();
+        return;
+    }
+
     // update player
     setPosition(progress, player, camera);
     setRotation(progress, player, camera);

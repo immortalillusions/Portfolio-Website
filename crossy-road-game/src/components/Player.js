@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import { tileSize } from '../constants.js';
+import { endsUpInValidPosition } from '../utilities/endsUpInValidPosition.js';
+
+const pos = [0,-45];
 
 export const player = Player();
 
@@ -29,13 +32,15 @@ function Player() {
     cap.castShadow = true;
     cap.receiveShadow = true;
     player.add(cap);
+    player.position.x = pos[0] * tileSize; 
+    player.position.y = pos[1] * tileSize; 
     return player;
 }
 
 // for moving player - now using actual coordinates
 export const position = {
-    currentX: 0,
-    currentY: 0
+    currentX: pos[0] * tileSize,
+    currentY: pos[1] * tileSize
 }
 
 // movements don't execute immediately; need queue
@@ -54,6 +59,10 @@ export function queueMove(direction){
 // vs in setPosition() - updates the visual 3D position
 export function stepCompleted(camera = null) {
     const direction = movesQueue.shift();
+    
+    // Calculate intended movement delta
+    let deltaX = 0;
+    let deltaY = 0;
     
     if (!camera) {
         // Fallback to world-relative movement if no camera provided
@@ -85,9 +94,6 @@ export function stepCompleted(camera = null) {
         y: -forward.x
     };
     
-    let deltaX = 0;
-    let deltaY = 0;
-    
     if (direction == "forward") {
         deltaX = forward.x * tileSize;
         deltaY = forward.y * tileSize;
@@ -101,7 +107,7 @@ export function stepCompleted(camera = null) {
         deltaX = right.x * tileSize;
         deltaY = right.y * tileSize;
     }
-    
+
     position.currentX += deltaX;
     position.currentY += deltaY;
 }

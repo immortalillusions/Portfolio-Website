@@ -1,33 +1,25 @@
 import * as THREE from 'three';
 import { size } from '../constants.js';
 export default function Camera(){
-    const viewRatio = window.innerWidth / window.innerHeight;
-    // if width is smaller, width of frustrum = 300 units
-    // if height is smaller, height of frustrum = 300 units
-    const width = viewRatio < 1 ? size : size * viewRatio;
-    const height = viewRatio < 1 ? size / viewRatio : size;
-    // use orthographic camera for 2D view (instead of perspective camera) -- like a video game
-    const camera = new THREE.OrthographicCamera(
-        // frustrum: box that defines what we can see
-        -width / 2, // left vertex
-        width / 2, // right
-        height / 2, // top
-        -height / 2, // bottom
-        100, // near
-        900 // far
+    // Use perspective camera
+    const camera = new THREE.PerspectiveCamera(
+        50, // field of view in degrees
+        window.innerWidth / window.innerHeight, // aspect ratio
+        1, // near clipping plane
+        2000 // far clipping plane
     );
+    
     // set z axis as the axis pointing upwards
     camera.up.set(0,0,1); 
-    // 250 right, 250 behind, 250 above ground
-    // this (and lookAt) causes camera to be at a 45 degree angle
+    // Position camera at same initial location
     camera.position.set(size, -size, size);
     camera.lookAt(0, 0, 0);
     
-    // Add rotation state
+    // Add rotation state (same as before)
     camera.userData = {
-        rotationX: Math.atan2(-size, size), // Initial angle around Z axis
-        rotationY: Math.atan2(size, Math.sqrt(size*size + size*size)), // Initial elevation
-        distance: Math.sqrt(size*size + size*size + size*size), // Distance from origin
+        rotationX: Math.atan2(-size, size),
+        rotationY: Math.atan2(size, Math.sqrt(size*size + size*size)),
+        distance: Math.sqrt(size*size + size*size + size*size),
         target: new THREE.Vector3(0, 0, 0)
     };
     

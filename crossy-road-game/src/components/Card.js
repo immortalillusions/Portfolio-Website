@@ -4,13 +4,10 @@ import { Tree } from './Tree.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 
-export function Card(x, y, icon, rightText, bottomLeftText) {
+export function Card(x, y, cardWidth, cardHeight, icon, rightText, bottomLeftText) {
     const card = new THREE.Group();
     card.position.x = x;
     card.position.y = y;
-
-    const cardWidth = 200;
-    const cardHeight = 150;
     const cardThickness = 6;
     const borderThickness = 10;
 
@@ -111,12 +108,20 @@ export function Card(x, y, icon, rightText, bottomLeftText) {
         type: 'experience-card',
         rightText: rightText,
         bottomLeftText: bottomLeftText,
+        // to make entire card clickable:
+        // url: 'https://discourse.threejs.org/t/add-a-link-to-displayed-text/40043', // Add URL here
+        // clickable: true,
         sections: {
             right: rightSection,
             topLeft: topLeftSection,
             bottomLeft: bottomLeftSection
         }
     };
+
+    // Make sections clickable by adding userData
+    // rightSection.userData = { clickable: true, url: card.userData.url };
+    // topLeftSection.userData = { clickable: true, url: card.userData.url };
+    // bottomLeftSection.userData = { clickable: true, url: card.userData.url };
 
     setShadowsRecursively(card, true, true);
     return card;
@@ -142,6 +147,10 @@ function addText(text, section, yOffset = 0) {
         const textMesh = new THREE.Mesh(textGeometry, textMaterial);
         textMesh.position.x = -40;
         textMesh.position.y = yOffset; // middle
+
+        // Make text clickable
+        // textMesh.userData = { clickable: true, url: section.userData?.url };
+        
         section.add(textMesh);
       }
     );
@@ -149,5 +158,10 @@ function addText(text, section, yOffset = 0) {
 
 // add floating icon
 function addIcon(icon, section){
+    // Only make icon clickable with URL
+    icon.userData = { 
+        clickable: true, 
+        url: 'https://your-portfolio-link.com' // Put your actual portfolio URL here
+    };
     section.add(icon);
 }

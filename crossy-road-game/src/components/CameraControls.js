@@ -7,6 +7,9 @@ export class CameraControls {
         this.isRotating = false;
         this.previousPointer = { x: 0, y: 0 };
         this.rotationSpeed = 0.005;
+        this.zoomSpeed = 30; // How much to zoom per scroll
+        this.minDistance = 100; // Minimum zoom distance
+        this.maxDistance = 1000; // Maximum zoom distance
         
         this.setupEventListeners();
     }
@@ -22,6 +25,9 @@ export class CameraControls {
         this.canvas.addEventListener('touchstart', this.onTouchStart.bind(this));
         this.canvas.addEventListener('touchmove', this.onTouchMove.bind(this));
         this.canvas.addEventListener('touchend', this.onPointerUp.bind(this));
+        
+        // Mouse wheel for zooming
+        this.canvas.addEventListener('wheel', this.onWheel.bind(this));
         
         // Prevent context menu on right click
         this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -72,6 +78,25 @@ export class CameraControls {
         
         this.updateRotation(currentPointer);
         event.preventDefault();
+    }
+    
+    onWheel(event) {
+        event.preventDefault();
+        
+        // Determine zoom direction
+        const zoomDirection = event.deltaY > 0 ? 1 : -1; // Positive = zoom out, negative = zoom in
+        
+        // Update camera distance
+        this.camera.userData.distance += zoomDirection * this.zoomSpeed;
+        
+        // Clamp distance to min/max values
+        this.camera.userData.distance = Math.max(
+            this.minDistance,
+            Math.min(this.maxDistance, this.camera.userData.distance)
+        );
+        
+        // Update camera position with new distance
+        updateCameraPosition(this.camera);
     }
     
     updateRotation(currentPointer) {

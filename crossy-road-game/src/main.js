@@ -13,6 +13,7 @@ import { setCameraTarget } from "./components/Camera.js";
 import { position } from "./components/Player.js";
 import { animatePokeball } from './components/Pokeball.js';
 import { size } from './constants.js';
+import { ClickHandler } from './components/ClickHandler.js';
 
 const scene = new THREE.Scene();
 scene.add(player);
@@ -32,6 +33,9 @@ const renderer = Renderer();
 // Initialize camera controls
 const cameraControls = new CameraControls(camera, renderer.domElement);
 
+// Initialize click handler for 3D objects
+const clickHandler = new ClickHandler(camera, scene, renderer);
+
 // call before rendering or else empty map
 initializeGame();
 
@@ -45,15 +49,8 @@ window.addEventListener('resize', () => {
   const height = window.innerHeight;
   renderer.setSize(width, height);
   
-  // Update camera frustum for orthographic camera
-  const viewRatio = width / height;
-  const frustumWidth = viewRatio < 1 ? size : size * viewRatio;
-  const frustumHeight = viewRatio < 1 ? size / viewRatio : size;
-  
-  camera.left = -frustumWidth / 2;
-  camera.right = frustumWidth / 2;
-  camera.top = frustumHeight / 2;
-  camera.bottom = -frustumHeight / 2;
+  // Update camera aspect ratio for perspective camera
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
 });
 
