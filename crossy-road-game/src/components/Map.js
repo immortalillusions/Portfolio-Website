@@ -6,6 +6,7 @@ import {Car} from './Car.js';
 import {Truck} from './Truck.js';
 import {Card} from './Card.js';
 import { tileSize } from '../constants.js';
+import { Pokeball } from './Pokeball.js';
 
 export const metadata = [
     {
@@ -43,8 +44,9 @@ export const metadata = [
         type: "card",
         card: {
             x: -2 * tileSize,
-            rightText: "Software Developer\nBuilt web applications using React and Node.js",
-            bottomLeftText: "2020-2023\nFull-time"
+            icon: Pokeball(),
+            rightText: "Guess and catch\nPokemon!\nMade with PokeAPI",
+            bottomLeftText: "PokiGuess\n2020-2023\nFull-time"
         },
         y: -1 * tileSize
     }
@@ -65,7 +67,7 @@ export function initializeMap(){
 export function addRows(){
     metadata.forEach((row) => {
         if (row.type === "card") {
-            const card = Card(row.card.x, row.y, row.card.rightText, row.card.bottomLeftText);
+            const card = Card(row.card.x, row.y, row.card.icon, row.card.rightText, row.card.bottomLeftText);
             map.add(card);
         }
 

@@ -1,28 +1,29 @@
 import * as THREE from 'three';
 import { setShadowsRecursively } from '../constants';
+import { Tree } from './Tree.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 
-export function Card(x, y, rightText = "Main Experience", bottomLeftText = "Additional Info") {
+export function Card(x, y, icon, rightText, bottomLeftText) {
     const card = new THREE.Group();
     card.position.x = x;
     card.position.y = y;
 
     const cardWidth = 200;
     const cardHeight = 150;
-    const cardThickness = 2;
+    const cardThickness = 6;
     const borderThickness = 10;
 
     // Main card base (slightly below ground for layering)
-    const base = new THREE.Mesh(
-        new THREE.BoxGeometry(cardWidth, cardHeight, cardThickness),
-        new THREE.MeshLambertMaterial({
-            color: 0xf5f5f5, // light gray background
-            flatShading: true
-        })
-    );
-    base.position.z = cardThickness / 2;
-    card.add(base);
+    // const base = new THREE.Mesh(
+    //     new THREE.BoxGeometry(cardWidth, cardHeight, cardThickness),
+    //     new THREE.MeshLambertMaterial({
+    //         color: 0xf5f5f5, // light gray background
+    //         flatShading: true
+    //     })
+    // );
+    // base.position.z = cardThickness / 2;
+    // card.add(base);
 
     // Right section border (add border first, then section on top)
     const rightBorder = new THREE.Mesh(
@@ -101,8 +102,9 @@ export function Card(x, y, rightText = "Main Experience", bottomLeftText = "Addi
     card.add(bottomLeftSection);
 
     // Add text placeholders to sections
-    addText(bottomLeftText, bottomLeftSection);
-    addText(rightText, rightSection);
+    addText(bottomLeftText, bottomLeftSection, 0);
+    addText(rightText, rightSection, 50);
+    addIcon(icon, topLeftSection);
 
     // Store metadata for text content
     card.userData = {
@@ -121,22 +123,31 @@ export function Card(x, y, rightText = "Main Experience", bottomLeftText = "Addi
 }
 
 // Helper function to create text using TextGeometry
-function addText(text, section) {
+// might be better to try 2d fonts: https://discourse.threejs.org/t/how-do-i-place-2d-text-over-3d-card-element/58080/40
+// or using canvas: https://discourse.threejs.org/t/writing-2d-text-onto-a-surface/18264/3
+function addText(text, section, yOffset = 0) {
     const fontLoader = new FontLoader();
     fontLoader.load(
       'node_modules/three/examples/fonts/droid/droid_serif_regular.typeface.json',
       (droidFont) => {
         const textGeometry = new TextGeometry(text, {
-          size: 10,
-          height: 4,
+          size: 5,
+          depth: 4,
           font: droidFont,
         });
-        const textMaterial = new THREE.MeshNormalMaterial();
+        const textMaterial = new THREE.MeshLambertMaterial({
+            color: 0x333333, // dark gray text
+            flatShading: true
+        });
         const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-        textMesh.position.x = -45;
-        textMesh.position.y = 0;
+        textMesh.position.x = -40;
+        textMesh.position.y = yOffset; // middle
         section.add(textMesh);
       }
     );
-    
+}
+
+// add floating icon
+function addIcon(icon, section){
+    section.add(icon);
 }
