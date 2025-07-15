@@ -4,7 +4,7 @@ import Renderer from "./components/Renderer.js";
 import Camera from "./components/Camera.js";
 import {player} from "./components/Player.js";
 import {map, initializeMap, metadata} from "./components/Map.js";
-import { DirectionalLight } from './components/DirectionalLight.js';
+import { PointLight } from './components/PointLight.js';
 import { animateVehicles } from './animateVehicles.js';
 import { animatePlayer } from './animatePlayer.js';
 import { CameraControls } from './components/CameraControls.js';
@@ -23,9 +23,14 @@ scene.add(map);
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // soft white light
 scene.add(ambientLight);
 
-const directionalLight = new DirectionalLight(); // white light
-// by default, the directional light points at 0,0,0
-scene.add(directionalLight);
+const pointLight = new PointLight(); // white light
+scene.add(pointLight);
+
+// Add helpers to scene (not to light) for correct positioning
+if (pointLight.helpers) {
+    scene.add(pointLight.helpers.shadowCamera);
+    scene.add(pointLight.helpers.direction);
+}
 
 const camera = Camera();
 const renderer = Renderer();

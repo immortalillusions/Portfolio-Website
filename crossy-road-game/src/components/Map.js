@@ -19,7 +19,7 @@ export const metadata = [
     {
         type: "forest",
         trees: [
-            {x: -3 * tileSize, height: 70},
+            {x: -6 * tileSize, height: 70},
             {x: 2 * tileSize, height: 20},
             {x: 1 * tileSize, height: 50}
         ],

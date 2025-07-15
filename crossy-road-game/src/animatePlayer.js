@@ -1,85 +1,59 @@
 import * as THREE from 'three';
-import {movesQueue, stepCompleted, position} from "./components/Player.js";
+import {movesQueue, position} from "./components/Player.js";
 import { tileSize } from "./constants.js";
 import { endsUpInValidPosition } from './utilities/endsUpInValidPosition.js';
 // do not start clock immediately
 // clock is used to animate player movement; it is PER step
 const moveClock = new THREE.Clock(false);
 
+let adjustedPosition = { x: position.currentX, y: position.currentY };
+
 // although player moves in discrete steps, this animates that smoothly
 export function animatePlayer(player, camera) {
     if (!movesQueue.length) return;
-    if (!moveClock.running) moveClock.start();
-
+    if (!moveClock.running) {
+        moveClock.start();
+        // only need to calculate the adjust position at the beginning of the step/move
+        adjustedPosition = endsUpInValidPosition(camera);
+    }
     const stepTime = 0.2; // seconds per step
     // progress is % completed of the current step
     const progress = Math.min(1, moveClock.getElapsedTime() / stepTime);
 
-    if (!endsUpInValidPosition(camera)) {
-        movesQueue.length = 0; // Clear the array without reassigning
-        moveClock.stop();
-        return;
-    }
-
     // update player
-    setPosition(progress, player, camera);
+    setPosition(progress, player, camera, adjustedPosition.x, adjustedPosition.y);
     setRotation(progress, player, camera);
     // completed step
     if (progress >= 1) {
-        stepCompleted(camera);
+        //stepCompleted(camera);
+        movesQueue.shift();
+        // Use the adjusted position (which handles collisions and boundaries)
+        position.currentX = adjustedPosition.x;
+        position.currentY = adjustedPosition.y;
         moveClock.stop();
     }
 }
 
 // use linear interpolation to move / rotate player smoothly depending on the progress
-function setPosition(progress, player, camera) {
+function setPosition(progress, player, camera, adjustedX, adjustedY) {
     const startX = position.currentX;
     const startY = position.currentY;
     
-    // Calculate camera's view direction from its actual position (match Player.js)
-    const target = camera.userData.target;
-    const cameraPos = camera.position;
+    // Use the collision-adjusted position as the actual end point
+    const finalEndX = adjustedX;
+    const finalEndY = adjustedY;
     
-    // Camera forward direction (from camera to target)
-    const forward = {
-        x: target.x - cameraPos.x,
-        y: target.y - cameraPos.y
-    };
+    // Smooth interpolation from start to collision-adjusted end position
+    player.position.x = THREE.MathUtils.lerp(startX, finalEndX, progress);
+    player.position.y = THREE.MathUtils.lerp(startY, finalEndY, progress);
     
-    // Normalize the forward vector
-    const forwardLength = Math.sqrt(forward.x * forward.x + forward.y * forward.y);
-    forward.x /= forwardLength;
-    forward.y /= forwardLength;
-    
-    // Right direction (perpendicular to forward)
-    const right = {
-        x: forward.y,  // 90 degree rotation
-        y: -forward.x
-    };
-    
-    let endX = startX;
-    let endY = startY;
-    
-    if (movesQueue[0] === "forward") {
-        endX += forward.x * tileSize;
-        endY += forward.y * tileSize;
-    } else if (movesQueue[0] === "backward") {
-        endX -= forward.x * tileSize;
-        endY -= forward.y * tileSize;
-    } else if (movesQueue[0] === "left") {
-        endX -= right.x * tileSize;
-        endY -= right.y * tileSize;
-    } else if (movesQueue[0] === "right") {
-        endX += right.x * tileSize;
-        endY += right.y * tileSize;
+    // add a little jump only if there's actual movement
+    const isMoving = Math.abs(finalEndX - startX) > 1 || Math.abs(finalEndY - startY) > 1;
+    if (isMoving) {
+        player.position.z = Math.sin(progress * Math.PI) * 8 + 2;
+    } else {
+        player.position.z = 2; // Stay on ground if not moving
     }
-    
-    // linear interpolation to determine what the current x position is depending on what the start and end positions are
-    // and progress
-    player.position.x = THREE.MathUtils.lerp(startX, endX, progress);
-    player.position.y = THREE.MathUtils.lerp(startY, endY, progress);
-    // add a little jump
-    player.position.z = Math.min(10, Math.sin(progress * Math.PI) * 8 + 2); // 10 is the base height
 }
 
 function setRotation(progress, player, camera){

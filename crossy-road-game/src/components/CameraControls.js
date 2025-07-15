@@ -30,7 +30,7 @@ export class CameraControls {
         this.canvas.addEventListener('wheel', this.onWheel.bind(this));
         
         // Prevent context menu on right click
-        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+        //this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     }
     // click (left / right)
     onPointerDown(event) {
