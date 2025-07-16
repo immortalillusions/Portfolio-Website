@@ -1,8 +1,8 @@
 export const bottomMap = -50;
 export const tileSize = 42; // size of each tile in the grid
-
-export const treeSize = tileSize*2; // needs to be greater than or equal to double tile size for collision detection in endsUpInValidPosition.js
-// or else the player can walk through trees since i only detect if the ending position is within the bounds of the tree
+export const playerStep = 42;
+// hitbox bounds around the tree
+export const treeBoundSize = 50; 
 
 export const minTileIndex = -25;
 export const maxTileIndex = 25;

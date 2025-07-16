@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { setShadowsRecursively } from '../constants';
+import { setShadowsRecursively, treeBoundSize } from '../constants';
 
 export function Tree(x, y, height) {
     const tree = new THREE.Group();
@@ -18,7 +18,7 @@ export function Tree(x, y, height) {
     tree.add(trunk);
 
     const leaves = new THREE.Mesh(
-        new THREE.BoxGeometry(50, 50, height), // width, length, height
+        new THREE.BoxGeometry(treeBoundSize, treeBoundSize, height), // width, length, height
         new THREE.MeshLambertMaterial({
             color: 0x7aa21d,
             flatShading: true

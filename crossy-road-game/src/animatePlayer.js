@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import {movesQueue, position} from "./components/Player.js";
-import { tileSize } from "./constants.js";
+import { addRows, metadata, numberObjects } from './components/Map.js';
 import { endsUpInValidPosition } from './utilities/endsUpInValidPosition.js';
+import { tileSize } from './constants.js';
+
 // do not start clock immediately
 // clock is used to animate player movement; it is PER step
 const moveClock = new THREE.Clock(false);
@@ -15,6 +17,10 @@ export function animatePlayer(player, camera) {
         moveClock.start();
         // only need to calculate the adjust position at the beginning of the step/move
         adjustedPosition = endsUpInValidPosition(camera);
+        // add rows if we're 20 tiles away from end of the map
+        if ((metadata.length - numberObjects) * tileSize - adjustedPosition.y < 20 * tileSize) {
+            addRows();
+        }
     }
     const stepTime = 0.2; // seconds per step
     // progress is % completed of the current step

@@ -22,7 +22,9 @@ export function PointLight() {
     // Center the shadow camera over the map area
     light.shadow.camera.up.set(0, 0, 1);
     light.shadow.camera.near = 200;
-    light.shadow.camera.far = 5000;
+    light.shadow.camera.far = 2250; // no more shadow once we get to the crossy game
+
+    light.shadow.camera.top = 0; // Stop at Y = 0, no shadows beyond this line
 
     // Create helpers but don't add them to the light
     const helper = new THREE.CameraHelper(light.shadow.camera);

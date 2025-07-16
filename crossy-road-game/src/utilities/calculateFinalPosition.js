@@ -1,4 +1,4 @@
-import { tileSize } from '../constants.js';
+import { playerStep } from '../constants.js';
 import { movesQueue, position } from '../components/Player.js';
 
 export function calculateFinalPosition(camera = null) {
@@ -16,13 +16,13 @@ export function calculateFinalPosition(camera = null) {
     if (!camera) {
         // Simple world movement
         if (direction === "forward") {
-            finalY += tileSize;
+            finalY += playerStep;
         } else if (direction === "backward") {
-            finalY -= tileSize;
+            finalY -= playerStep;
         } else if (direction === "left") {
-            finalX -= tileSize;
+            finalX -= playerStep;
         } else if (direction === "right") {
-            finalX += tileSize;
+            finalX += playerStep;
         }
     } else {
         // Camera-relative movement (same as Player.js)
@@ -47,17 +47,17 @@ export function calculateFinalPosition(camera = null) {
         };
         
         if (direction === "forward") {
-            finalX += forward.x * tileSize;
-            finalY += forward.y * tileSize;
+            finalX += forward.x * playerStep;
+            finalY += forward.y * playerStep;
         } else if (direction === "backward") {
-            finalX -= forward.x * tileSize;
-            finalY -= forward.y * tileSize;
+            finalX -= forward.x * playerStep;
+            finalY -= forward.y * playerStep;
         } else if (direction === "left") {
-            finalX -= right.x * tileSize;
-            finalY -= right.y * tileSize;
+            finalX -= right.x * playerStep;
+            finalY -= right.y * playerStep;
         } else if (direction === "right") {
-            finalX += right.x * tileSize;
-            finalY += right.y * tileSize;
+            finalX += right.x * playerStep;
+            finalY += right.y * playerStep;
         }
     }
     
