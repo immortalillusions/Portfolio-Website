@@ -11,17 +11,24 @@ import { generateRows } from '../utilities/generateRows.js';
 
 // initial metadata: need to add cards / initial items to a metadata
 // also because we need to calculate hit bounds
-export const metadata = [];
 
-const otherObjects = [
-    {
+// CONVERT METADATA TO MAP FOR THE FUNCTION ENDSUPINVALIDPOSITION
+// SO WE ONLY HAVE TO CHECK ROWS WITH THE SAME INDEX
+// AND NOT ITERATE THROUGH ALL ROWS WHICH CAN GROW A LOT IF USER PLAYS FOR A LONG TIME
+// note: this only works if y is in discrete increments of tileSize
+
+export const metadata = new Map();
+
+export const otherObjects = new Map([
+    [-38 * tileSize, [{
         type: "truck",
         direction: true,
         speed: 50,
         vehicles: [{initialX: -3 * tileSize, color: 0xff0000}],
         y: -38 * tileSize
-    },
-    {
+    }]],
+    
+    [-39 * tileSize, [{
         type: "forest",
         trees: [
             {x: -6 * tileSize, height: 70},
@@ -29,8 +36,9 @@ const otherObjects = [
             {x: 1 * tileSize, height: 50}
         ],
         y: -39 * tileSize
-    },
-    {
+    }]],
+    
+    [-5 * tileSize, [{
         type: "forest",
         trees: [
             {x: -6 * tileSize, height: 70},
@@ -38,31 +46,35 @@ const otherObjects = [
             {x: 1 * tileSize, height: 50}
         ],
         y: -5 * tileSize
-    },
-    {
+    }]],
+    
+    [-11 * tileSize, [{
         type: "car",
         // true: move right, false: move left
         direction: false,
         speed: 80,
         vehicles: [{initialX: -1 * tileSize, color: 0xff0000}],
-        y:-11 * tileSize
-    },
-    {
+        y: -11 * tileSize
+    }]],
+    
+    [-3 * tileSize, [{
         type: "car",
         // true: move right, false: move left
         direction: false,
         speed: 80,
         vehicles: [{initialX: -1 * tileSize, color: 0xff0000}],
         y: -3 * tileSize
-    },
-    {
+    }]],
+    
+    [-4 * tileSize, [{
         type: "truck",
         direction: true,
         speed: 100,
         vehicles: [{initialX: -4 * tileSize, color: 0x00ff00}],
         y: -4 * tileSize
-    },
-    {
+    }]],
+    
+    [-40 * tileSize, [{
         type: "card",
         card: {
             x: -2 * tileSize,
@@ -73,10 +85,16 @@ const otherObjects = [
             bottomLeftText: "PokiGuess\n2020-2023\nFull-time"
         },
         y: -40 * tileSize
-    }
-];
+    }]]
+]);
 
-export const numberObjects = otherObjects.length;
+export function countObjectsInMap(map) {
+    let totalCount = 0;
+    for (const objectsArray of map.values()) {
+        totalCount += objectsArray.length;
+    }
+    return totalCount;
+}
 
 export const map = new THREE.Group();
 
@@ -92,70 +110,86 @@ export function initializeMap(){
         }
     }
     // Add other objects to the map
-    metadata.push(...otherObjects);
+    for (const [key, value] of otherObjects) {
+        metadata.set(key, [...value]); // Copy array
+    }
     // Populate initial data
-    populateRows(metadata, false);
+    populateRows(metadata);
     // Add the new rows
     addRows();  
 }
 
-export function populateRows(data, generated = true, startIndex = 0) {
+export function populateRows(data) {
     // Add the rows to the map
-    data.forEach((row, i) => {
-        let y;
-        if (generated){
-            y = (startIndex + i + 1) * tileSize ;
-        } else {
-            y = row.y;
-        }
-        if (row.type === "card") {
-            const card = Card(row.card.x, y, row.card.cardWidth, row.card.cardHeight, row.card.icon, row.card.rightText, row.card.bottomLeftText);
-            map.add(card);
-        }
+    for (const [y, objectsAtY] of data) {
+        for (const row of objectsAtY) {
+            const y = row.y
+            if (row.type === "card") {
+                const card = Card(row.card.x, y, row.card.cardWidth, row.card.cardHeight, row.card.icon, row.card.rightText, row.card.bottomLeftText);
+                map.add(card);
+            }
 
-        // first row of the metadata is the second row, after the starting row (which is not included in the metadata)
-        if (row.type === "forest") {
-            // returns grass Group; represents the row
-            const r = Grass(y);
-            row.trees.forEach(({x, height}) => {
-                const tree = Tree(x, 0, height); // y=0 since parent group handles positioning
-                // add each tree to the grass Group
-                r.add(tree);
-            })
-            // add the grass Group to the map
-            map.add(r);
+            // first row of the metadata is the second row, after the starting row (which is not included in the metadata)
+            if (row.type === "forest") {
+                // returns grass Group; represents the row
+                const r = Grass(y);
+                row.trees.forEach(({x, height}) => {
+                    const tree = Tree(x, 0, height); // y=0 since parent group handles positioning
+                    // add each tree to the grass Group
+                    r.add(tree);
+                })
+                // add the grass Group to the map
+                map.add(r);
+            }
+            else if (row.type === "car") {
+                const r = Road(y);
+                row.vehicles.forEach(vehicle => {
+                    const car = Car(vehicle.initialX, 0, row.direction, vehicle.color);
+                    // store ref to car object for animation
+                    vehicle.ref = car;
+                    r.add(car);
+                });
+                map.add(r);
+            }
+            else if (row.type === "truck") {
+                const r = Road(y);
+                row.vehicles.forEach(vehicle => {
+                    const truck = Truck(vehicle.initialX, 0, row.direction, vehicle.color);
+                    vehicle.ref = truck;
+                    r.add(truck);
+                });
+                map.add(r);
+            }
         }
-        else if (row.type === "car") {
-            const r = Road(y);
-            row.vehicles.forEach(vehicle => {
-                const car = Car(vehicle.initialX, 0, row.direction, vehicle.color);
-                // store ref to car object for animation
-                vehicle.ref = car;
-                r.add(car);
-            });
-            map.add(r);
-        }
-        else if (row.type === "truck") {
-            const r = Road(y);
-            row.vehicles.forEach(vehicle => {
-                const truck = Truck(vehicle.initialX, 0, row.direction, vehicle.color);
-                vehicle.ref = truck;
-                r.add(truck);
-            });
-            map.add(r);
-        }
-    });
+    }
 }
 
 export function addRows(){
-    const startIndex = metadata.length - otherObjects.length;
-    const newRows = generateRows(40);
+    const startIndex = metadata.size - otherObjects.size;
+    const newRows = generateRows(50);
+    
+    // Create a Map to hold just the new rows for populateRows
+    const newRowsMap = new Map();
+    
+    // Add new rows to metadata Map
     for (let i = 0; i < newRows.length; i++) {
-        newRows[i].y = (startIndex + i + 1) * tileSize; // Set the Y position based on the current length of metadata
+        const y = (startIndex + i + 1) * tileSize;
+        newRows[i].y = y;
+        
+        // Map equivalent of push: set the y-coordinate as key
+        if (!metadata.has(y)) {
+            metadata.set(y, []);
+        }
+        metadata.get(y).push(newRows[i]);
+        
+        // Also add to newRowsMap for populateRows
+        if (!newRowsMap.has(y)) {
+            newRowsMap.set(y, []);
+        }
+        newRowsMap.get(y).push(newRows[i]);
     }
-    metadata.push(...newRows);
 
-    // Repopulate the rows
-    populateRows(newRows, true, startIndex);
-    console.log('Added new rows:', metadata.length);
+    // Populate only the new rows using the newRowsMap
+    populateRows(newRowsMap);
+    console.log('Added new rows:', metadata.size);
 }

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {movesQueue, position} from "./components/Player.js";
-import { addRows, metadata, numberObjects } from './components/Map.js';
+import { addRows, metadata, otherObjects, countObjectsInMap } from './components/Map.js';
 import { endsUpInValidPosition } from './utilities/endsUpInValidPosition.js';
 import { tileSize } from './constants.js';
 
@@ -10,6 +10,8 @@ const moveClock = new THREE.Clock(false);
 
 let adjustedPosition = { x: position.currentX, y: position.currentY };
 
+const numberObjects = countObjectsInMap(otherObjects); // initial count of objects in the map
+
 // although player moves in discrete steps, this animates that smoothly
 export function animatePlayer(player, camera) {
     if (!movesQueue.length) return;
@@ -17,8 +19,8 @@ export function animatePlayer(player, camera) {
         moveClock.start();
         // only need to calculate the adjust position at the beginning of the step/move
         adjustedPosition = endsUpInValidPosition(camera);
-        // add rows if we're 20 tiles away from end of the map
-        if ((metadata.length - numberObjects) * tileSize - adjustedPosition.y < 20 * tileSize) {
+        // add rows if we're 25 tiles away from end of the map
+        if ((metadata.size - numberObjects) * tileSize - adjustedPosition.y < 25 * tileSize) {
             addRows();
         }
     }

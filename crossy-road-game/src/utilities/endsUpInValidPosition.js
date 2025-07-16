@@ -1,8 +1,12 @@
 import { calculateFinalPosition } from "./calculateFinalPosition.js";
 import { tileSize, minTileIndex, maxTileIndex, bottomMap } from "../constants.js";
-import { metadata as rows } from "../components/Map.js";
+import { metadata } from "../components/Map.js";
 import { position } from '../components/Player.js';
 import { treeBoundSize } from "../constants.js";
+
+// CONVERT METADATA TO MAP FOR THE FUNCTION ENDSUPINVALIDPOSITION
+// SO WE ONLY HAVE TO CHECK ROWS WITH THE SAME INDEX
+// AND NOT ITERATE THROUGH ALL ROWS WHICH CAN GROW A LOT IF USER PLAYS FOR A LONG TIME
 
 export function endsUpInValidPosition(camera) {
     const finalPosition = calculateFinalPosition(camera);
@@ -23,89 +27,109 @@ export function endsUpInValidPosition(camera) {
     // may need to edit the upper bound of board if we want it to expand infinitely
     if (finalPosition.y <= (bottomMap+1) * tileSize) {
         y = (bottomMap+1) * tileSize; // Snap to edge
-    } else if (finalPosition.y >= (rows.length-1) * tileSize) {
-        y = (rows.length-1) * tileSize; // Snap to edge
     }
-    // HIT BOUNDS SHOULD REFLECT SIZE OF OBJECT
-    // NOTE THAT THE BOUNDS NEED TO BE TWICE THE SIZE OF THE TILE OR ELSE THE PLAYER CAN WALK THROUGH OBJ
+    // no upper bound because expands infinitely
+    // } else if (finalPosition.y >= (rows.length-1) * tileSize) {
+    //     y = (rows.length-1) * tileSize; // Snap to edge
+    // }
 
+
+    // HIT BOUNDS SHOULD REFLECT SIZE OF OBJECT
+    
+    // Calculate target y-coordinate range for collision detection
+    const minY = Math.min(startY, finalPosition.y);
+    const maxY = Math.max(startY, finalPosition.y);
+    
+    // Convert to tile coordinates and expand by 1 tile in each direction
+    const startTileY = (Math.floor(minY / tileSize) - 1) * tileSize;
+    const endTileY = (Math.floor(maxY / tileSize) + 1) * tileSize;
+    
+    // Only iterate through rows in the target y-coordinate range
+    for (let checkY = startTileY; checkY <= endTileY; checkY += tileSize) {
+        const rows = metadata.get(checkY);
+        
+        // Skip if no objects at this y-coordinate
+        if (!rows) continue;
+        
+    // Check collision with all objects at this y-coordinate
     // hit tree
-    for (const row of rows) {
-        if (row.type === "forest") {
-            for (const tree of row.trees) {
-                const result = checkBounds("tree", startX, startY, finalPosition.x, finalPosition.y,
-                    tree.x, row.y, treeBoundSize, treeBoundSize);
+        for (const row of rows) {
+            if (row.type === "forest") {
+                for (const tree of row.trees) {
+                    const result = checkBounds("tree", startX, startY, finalPosition.x, finalPosition.y,
+                        tree.x, row.y, treeBoundSize, treeBoundSize);
+                    // Only update if there was a collision (position changed)
+                    if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
+                        x = result[0];
+                        y = result[1];
+                    }
+                    // const treeX = tree.x;
+                    // const treeY = row.y;
+                    // if (
+                    //     finalPosition.x > treeX - treeBoundSize / 2 &&
+                    //     finalPosition.x < treeX + treeBoundSize / 2 &&
+                    //     finalPosition.y > treeY - treeBoundSize / 2 &&
+                    //     finalPosition.y < treeY + treeBoundSize / 2
+                    // ) {
+                    //     if (!(startX > treeX - treeBoundSize / 2 &&
+                    //     startX < treeX + treeBoundSize / 2)){
+                    //         if (treeX > finalPosition.x) {
+                    //             x = treeX - treeBoundSize / 2;
+                    //         } else {
+                    //             x = treeX + treeBoundSize / 2;
+                    //         }
+                    //     }
+                    //     if (!(startY > treeY - treeBoundSize / 2 &&
+                    //     startY < treeY + treeBoundSize / 2)) {
+                    //         if (treeY > finalPosition.y) {
+                    //             y = treeY - treeBoundSize / 2;
+                    //         } else {
+                    //             y = treeY + treeBoundSize / 2;
+                    //         }
+                    //     }
+                    // }
+                }
+            }
+            if (row.type === "card") {
+                const result = checkBounds("card", startX, startY, finalPosition.x, finalPosition.y,
+                    row.card.x, row.y, row.card.cardWidth, row.card.cardHeight);
                 // Only update if there was a collision (position changed)
                 if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
                     x = result[0];
                     y = result[1];
                 }
-                // const treeX = tree.x;
-                // const treeY = row.y;
+                // const cardX = row.card.x;
+                // const cardY = row.y;
+                // const cardWidth = row.card.cardWidth;
+                // const cardHeight = row.card.cardHeight;
+                // // if there is an overlap
                 // if (
-                //     finalPosition.x > treeX - treeBoundSize / 2 &&
-                //     finalPosition.x < treeX + treeBoundSize / 2 &&
-                //     finalPosition.y > treeY - treeBoundSize / 2 &&
-                //     finalPosition.y < treeY + treeBoundSize / 2
+                //     finalPosition.x > cardX - cardWidth / 2 &&
+                //     finalPosition.x < cardX + cardWidth / 2 &&
+                //     finalPosition.y > cardY - cardHeight / 2 &&
+                //     finalPosition.y < cardY + cardHeight / 2
                 // ) {
-                //     if (!(startX > treeX - treeBoundSize / 2 &&
-                //     startX < treeX + treeBoundSize / 2)){
-                //         if (treeX > finalPosition.x) {
-                //             x = treeX - treeBoundSize / 2;
+                //     // X was not the problem before which means it is a problem now
+                //     if (!(startX > cardX - cardWidth / 2 &&
+                //         startX < cardX + cardWidth / 2)) {
+                //         // snap x to edge (depending on if its left or right of middle)
+                //         if (cardX > finalPosition.x) {
+                //             x = cardX - cardWidth / 2;
                 //         } else {
-                //             x = treeX + treeBoundSize / 2;
+                //             x = cardX + cardWidth / 2;
                 //         }
                 //     }
-                //     if (!(startY > treeY - treeBoundSize / 2 &&
-                //     startY < treeY + treeBoundSize / 2)) {
-                //         if (treeY > finalPosition.y) {
-                //             y = treeY - treeBoundSize / 2;
+                //     // y was not the problem before which means it is a problem now
+                //     if (!(startY > cardY - cardHeight / 2 &&
+                //         startY < cardY + cardHeight / 2)) {
+                //         if (cardY > finalPosition.y) {
+                //             y = cardY - cardHeight / 2;
                 //         } else {
-                //             y = treeY + treeBoundSize / 2;
+                //             y = cardY + cardHeight / 2;
                 //         }
                 //     }
                 // }
             }
-        }
-        if (row.type === "card") {
-            const result = checkBounds("card", startX, startY, finalPosition.x, finalPosition.y,
-                row.card.x, row.y, row.card.cardWidth, row.card.cardHeight);
-            // Only update if there was a collision (position changed)
-            if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
-                x = result[0];
-                y = result[1];
-            }
-            // const cardX = row.card.x;
-            // const cardY = row.y;
-            // const cardWidth = row.card.cardWidth;
-            // const cardHeight = row.card.cardHeight;
-            // // if there is an overlap
-            // if (
-            //     finalPosition.x > cardX - cardWidth / 2 &&
-            //     finalPosition.x < cardX + cardWidth / 2 &&
-            //     finalPosition.y > cardY - cardHeight / 2 &&
-            //     finalPosition.y < cardY + cardHeight / 2
-            // ) {
-            //     // X was not the problem before which means it is a problem now
-            //     if (!(startX > cardX - cardWidth / 2 &&
-            //         startX < cardX + cardWidth / 2)) {
-            //         // snap x to edge (depending on if its left or right of middle)
-            //         if (cardX > finalPosition.x) {
-            //             x = cardX - cardWidth / 2;
-            //         } else {
-            //             x = cardX + cardWidth / 2;
-            //         }
-            //     }
-            //     // y was not the problem before which means it is a problem now
-            //     if (!(startY > cardY - cardHeight / 2 &&
-            //         startY < cardY + cardHeight / 2)) {
-            //         if (cardY > finalPosition.y) {
-            //             y = cardY - cardHeight / 2;
-            //         } else {
-            //             y = cardY + cardHeight / 2;
-            //         }
-            //     }
-            // }
         }
     }
   //  console.log("Final position after collision:", { x, y });

@@ -3,7 +3,7 @@ import './style.css'
 import Renderer from "./components/Renderer.js";
 import Camera from "./components/Camera.js";
 import {player} from "./components/Player.js";
-import {map, initializeMap, metadata} from "./components/Map.js";
+import {map, initializeMap, otherObjects} from "./components/Map.js";
 import { PointLight } from './components/PointLight.js';
 import { animateVehicles } from './animateVehicles.js';
 import { animatePlayer } from './animatePlayer.js';
@@ -91,11 +91,13 @@ function animate() {
     }
 
     // Animate Pokeballs in cards
-    metadata.forEach(row => {
-        if (row.type === "card" && row.card.icon) {
-            animatePokeball(row.card.icon);
+    for (const [y, objectsAtY] of otherObjects) {
+        for (const row of objectsAtY) {
+            if (row.type === "card" && row.card.icon) {
+                animatePokeball(row.card.icon);
+            }
         }
-    });
+    }
     
     // Update camera to follow player with improved smoothing
     // Use a slightly higher value for more responsive but still smooth following
