@@ -160,6 +160,7 @@ function addText(text, section, yOffset = 0) {
 function addIcon(icon, section){
     // Only make icon clickable with URL
     icon.userData = { 
+        ...icon.userData, // Preserve existing userData (like animation properties)
         clickable: true, 
         url: 'https://your-portfolio-link.com' // Put your actual portfolio URL here
     };

@@ -108,10 +108,10 @@ export class CameraControls {
         this.camera.userData.rotationY += deltaY * this.rotationSpeed; 
         
         // Clamp vertical rotation to prevent flipping
-        this.camera.userData.rotationY = Math.max(
-            0.1, // Minimum elevation (almost top-down view)
-            Math.min(Math.PI * 0.45, this.camera.userData.rotationY) // Maximum elevation (45 degrees)
-        );
+        // this.camera.userData.rotationY = Math.max(
+        //     0.1, // Minimum elevation (almost top-down view)
+        //     Math.min(Math.PI * 0.45, this.camera.userData.rotationY) // Maximum elevation (45 degrees)
+        // );
         
         // Update camera position (target will be set by main animation loop)
         updateCameraPosition(this.camera);

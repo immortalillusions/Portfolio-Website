@@ -39,10 +39,12 @@ export function endsUpInValidPosition(camera) {
     // Calculate target y-coordinate range for collision detection
     const minY = Math.min(startY, finalPosition.y);
     const maxY = Math.max(startY, finalPosition.y);
-    
-    // Convert to tile coordinates and expand by 1 tile in each direction
-    const startTileY = (Math.floor(minY / tileSize) - 1) * tileSize;
-    const endTileY = (Math.floor(maxY / tileSize) + 1) * tileSize;
+
+    // Convert to tile coordinates and expand by 10 tiles in each direction
+    // UPDATE DEPENDING ON THE SIZE OF MY BIGGEST OBJECT
+    // This ensures we check a reasonable range around the final position
+    const startTileY = (Math.floor(minY / tileSize) - 10) * tileSize;
+    const endTileY = (Math.floor(maxY / tileSize) + 10) * tileSize;
     
     // Only iterate through rows in the target y-coordinate range
     for (let checkY = startTileY; checkY <= endTileY; checkY += tileSize) {
@@ -130,6 +132,15 @@ export function endsUpInValidPosition(camera) {
                 //     }
                 // }
             }
+            if (row.type === "sign") {
+                const result = checkBounds("sign", startX, startY, finalPosition.x, finalPosition.y,
+                    row.sign.x, row.y, row.sign.width, 5); // thickness instead of height
+                // Only update if there was a collision (position changed)
+                if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
+                    x = result[0];
+                    y = result[1];
+                }
+            }
         }
     }
   //  console.log("Final position after collision:", { x, y });
@@ -170,7 +181,6 @@ function checkBounds(i = "", startX, startY, finalX, finalY, itemX, itemY, itemW
         }
     }
 
-    // NOTE: I HAVENT HAD ANY SUPER SMALL OBJECTS YET TO TEST THIS WITH
     // if player WENT THROUGH the object from bottom to top / top to bottom
     if (
         (startY <= itemY - itemHeight / 2 &&
@@ -179,12 +189,15 @@ function checkBounds(i = "", startX, startY, finalX, finalY, itemX, itemY, itemW
         finalY <= itemY - itemHeight / 2
         )
     ) {
-
-        console.log("Checking overlap in Y direction");
+        //console.log("Checking overlap in Y direction");
         // check overlap in x values
         if (checkIntervalIntersection(startX, finalX, itemX - itemWidth / 2, itemX + itemWidth / 2)) {
-            console.log("Go through detected in Y direction");
-            return [startX, startY]; // Do not move player
+            //console.log("Go through detected in Y direction");
+            if ((startY <= itemY - itemHeight / 2 &&
+        finalY >= itemY + itemHeight / 2)){
+            return [startX, itemY - itemHeight / 2 ]; 
+        }
+            return [startX, itemY + itemHeight / 2 ]; 
         }
     }
     // if player WENT THROUGH the object from left to right / right to left
@@ -195,11 +208,15 @@ function checkBounds(i = "", startX, startY, finalX, finalY, itemX, itemY, itemW
         finalX <= itemX - itemWidth / 2
         )
     ) {
-        console.log("Checking overlap in X direction");
+       // console.log("Checking overlap in X direction");
         // check overlap in y values
         if (checkIntervalIntersection(startY, finalY, itemY - itemHeight / 2, itemY + itemHeight / 2)) {
-            console.log("Go through detected in X direction");
-            return [startX, startY]; // Do not move player
+            //console.log("Go through detected in X direction");
+            if ((startX <= itemX - itemWidth / 2 &&
+        finalX >= itemX + itemWidth / 2)){
+            return [itemX - itemWidth / 2, startY];
+        }
+            return [itemX + itemWidth / 2, startY];
         }
     }
 
@@ -207,6 +224,7 @@ function checkBounds(i = "", startX, startY, finalX, finalY, itemX, itemY, itemW
 }
 
 function checkIntervalIntersection(start, end, itemStart, itemEnd) {
+    let temp;
     if (start > itemStart) {
         // for simplicity, start is always less than or equal to itemStart
         temp = start;

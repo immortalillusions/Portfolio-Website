@@ -15,10 +15,31 @@ import { animatePokeball } from './components/Pokeball.js';
 import { size } from './constants.js';
 import { ClickHandler } from './components/ClickHandler.js';
 import { DirectionalLight } from './components/DirectionalLight.js';
+
 const scene = new THREE.Scene();
 scene.add(player);
 scene.add(map);
 
+// Set skybox as scene background using CubeTextureLoader
+const loader = new THREE.CubeTextureLoader();
+loader.load([
+    './Day_Left.png',   // positive X (right)
+    './Day_Right.png',    // negative X (left)
+    './Day_Front.png',     // positive Y (top)
+    './Day_Back.png',  // negative Y (bottom)
+    './Day_Top.png',   // positive Z (front)
+    './Day_Bottom.png'     // negative Z (back)
+], function(texture) {
+    scene.background = texture;
+});
+
+
+    // './clouds1/clouds1_east.bmp',   // positive X
+    // './clouds1/clouds1_west.bmp',   // negative X  
+    // './clouds1/clouds1_up.bmp',     // positive Y
+    // './clouds1/clouds1_down.bmp',   // negative Y
+    // './clouds1/clouds1_north.bmp',  // positive Z
+    // './clouds1/clouds1_south.bmp'   // negative Z
 // lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 1); // soft white light
 scene.add(ambientLight);
@@ -47,7 +68,7 @@ const renderer = Renderer();
 const cameraControls = new CameraControls(camera, renderer.domElement);
 
 // Initialize click handler for 3D objects
-const clickHandler = new ClickHandler(camera, scene, renderer);
+const clickHandler = new ClickHandler(camera, scene, renderer, ambientLight);
 
 // call before rendering or else empty map
 initializeGame();
@@ -78,7 +99,7 @@ function animate() {
     directionalLight.position.set(
         player.position.x + lightOffset.x,
         player.position.y + lightOffset.y,
-        player.position.z + lightOffset.z
+        player.position.z + lightOffset.z 
     );
 
     // Toggle directional light based on player Y position (efficient method)

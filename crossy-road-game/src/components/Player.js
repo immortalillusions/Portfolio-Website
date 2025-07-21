@@ -33,7 +33,7 @@ function Player() {
     cap.receiveShadow = true;
     player.add(cap);
     player.position.x = pos[0] * tileSize; 
-    player.position.y = pos[1] * tileSize; 
+    player.position.y = pos[1] * tileSize;
     return player;
 }
 

@@ -11,7 +11,7 @@ export function PointLight() {
     light.distance = 0;
     light.decay = 0;
     
-    light.position.set(-250, -2050, 800);
+    light.position.set(-250, -2050,  300); 
     light.up.set(0, 0, 1);
     light.castShadow = true;
 

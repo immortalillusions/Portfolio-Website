@@ -5,6 +5,7 @@ import {Road} from './Road.js';
 import {Car} from './Car.js';
 import {Truck} from './Truck.js';
 import {Card} from './Card.js';
+import {Sign} from './Sign.js';
 import { tileSize, bottomMap } from '../constants.js';
 import { Pokeball } from './Pokeball.js';
 import { generateRows } from '../utilities/generateRows.js';
@@ -85,6 +86,33 @@ export const otherObjects = new Map([
             bottomLeftText: "PokiGuess\n2020-2023\nFull-time"
         },
         y: -40 * tileSize
+    }]],
+    [-35 * tileSize, [{
+        type: "sign",
+        sign: {
+            x: 5 * tileSize,
+            width: 100,
+            height: 50,
+            text: "Hey there,\nWelcome!",
+            color: 0xf8e8e8,
+            vertical: 5,
+            horizontal: -15,
+        },
+        y: -35 * tileSize
+    }]],
+    [-36 * tileSize, [{
+        type: "sign",
+        sign: {
+            x: -1 * tileSize,
+            width: 60,
+            height: 60,
+            text: "Click Me!\nDay/Night\nToggle",
+            color: 0x6a5acd,
+            vertical: 5,
+            horizontal: -15,
+            toggleSkybox: true
+        },
+        y: -36 * tileSize
     }]]
 ]);
 
@@ -99,6 +127,7 @@ export function countObjectsInMap(map) {
 export const map = new THREE.Group();
 
 export function initializeMap(){
+    // Make map higher up for a better view of skybox
     // Create grass rows before player (negative Y values)
     for (let i = 0; i > bottomMap; i--) {
         if (i == 0){
@@ -127,6 +156,10 @@ export function populateRows(data) {
             if (row.type === "card") {
                 const card = Card(row.card.x, y, row.card.cardWidth, row.card.cardHeight, row.card.icon, row.card.rightText, row.card.bottomLeftText);
                 map.add(card);
+            }
+            else if (row.type === "sign") {
+                const sign = Sign(row.sign.x, y, row.sign.width, row.sign.height, row.sign.text, row.sign.color, row.sign.vertical, row.sign.horizontal, row.sign.skybox, row.sign.toggleSkybox);
+                map.add(sign);
             }
 
             // first row of the metadata is the second row, after the starting row (which is not included in the metadata)
