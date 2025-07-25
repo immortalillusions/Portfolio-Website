@@ -127,14 +127,13 @@ export function countObjectsInMap(map) {
 export const map = new THREE.Group();
 
 export function initializeMap(){
-    // Make map higher up for a better view of skybox
     // Create grass rows before player (negative Y values)
     for (let i = 0; i > bottomMap; i--) {
         if (i == 0){
-            const grass = Grass(i * tileSize, 0xa7e3bb);
+            const grass = Grass(i * tileSize, 0xa7e3bb, true);
             map.add(grass);
         } else {
-            const grass = Grass(i * tileSize);
+            const grass = Grass(i * tileSize, undefined, true); // Skip color, use addTrees
             map.add(grass);
         }
     }

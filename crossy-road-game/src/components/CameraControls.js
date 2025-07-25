@@ -9,7 +9,7 @@ export class CameraControls {
         this.rotationSpeed = 0.005;
         this.zoomSpeed = 30; // How much to zoom per scroll
         this.minDistance = 100; // Minimum zoom distance
-        this.maxDistance = 1000; // Maximum zoom distance
+        this.maxDistance = 300; // Maximum zoom distance
         
         this.setupEventListeners();
     }

@@ -25,8 +25,8 @@ function randomElement(array) {
 function generateForestLaneMetadata() {
     const trees = [];
     const occupiedTiles = new Set();
-    // 50 tiles wide so generate max 10 trees
-    const treeCount = Math.floor(Math.random() * 10) + 1; // 1 to 10 trees
+    // 110 tiles wide so generate max 20 trees
+    const treeCount = Math.floor(Math.random() * 10) + 10; // 10 to 20 trees
     for (let i = 0; i < treeCount; i++) {
         let x;
         do {
@@ -50,9 +50,9 @@ function generateVehicleLaneMetadata(vehicle) {
 
     let vehicleCount;
     if (vehicle === "car") {
-        vehicleCount = Math.floor(Math.random() * 5) + 1; // 1 to 5 vehicles
+        vehicleCount = Math.floor(Math.random() * 10) + 5; // 5 to 15 vehicles
     } else {
-        vehicleCount = Math.floor(Math.random() * 3) + 1; // 1 to 3 trucks
+        vehicleCount = Math.floor(Math.random() * 7) + 3; // 3 to 10 trucks
     }
     for (let i = 0; i < vehicleCount; i++) {
         let initialX;

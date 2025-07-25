@@ -1,5 +1,5 @@
 import { calculateFinalPosition } from "./calculateFinalPosition.js";
-import { tileSize, minTileIndex, maxTileIndex, bottomMap } from "../constants.js";
+import { tileSize, minTilePlayer, maxTilePlayer, bottomMap } from "../constants.js";
 import { metadata } from "../components/Map.js";
 import { position } from '../components/Player.js';
 import { treeBoundSize } from "../constants.js";
@@ -19,10 +19,10 @@ export function endsUpInValidPosition(camera) {
  //   console.log("Final position before collision:", finalPosition);
 
     // detect if we hit the edge of the board
-    if (finalPosition.x <= minTileIndex * tileSize) {
-        x = minTileIndex * tileSize; // Snap to edge
-    } else if (finalPosition.x >= maxTileIndex * tileSize) {
-        x = maxTileIndex * tileSize; // Snap to edge
+    if (finalPosition.x <= minTilePlayer * tileSize) {
+        x = minTilePlayer * tileSize; // Snap to edge
+    } else if (finalPosition.x >= maxTilePlayer * tileSize) {
+        x = maxTilePlayer * tileSize; // Snap to edge
     }
     // may need to edit the upper bound of board if we want it to expand infinitely
     if (finalPosition.y <= (bottomMap+1) * tileSize) {
