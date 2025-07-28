@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { setShadowsRecursively, treeBoundSize } from '../constants';
+import { setShadowsRecursively, treeBoundSize, maxTilePlayer, minTilePlayer, tileSize } from '../constants';
 
 export function Tree(x, y, height) {
     const tree = new THREE.Group();
@@ -27,6 +27,8 @@ export function Tree(x, y, height) {
     // adjust for trunk
     leaves.position.z = height / 2 + 20;
     tree.add(leaves);
+    
     setShadowsRecursively(tree, true, true);
+
     return tree;
 }

@@ -130,13 +130,13 @@ export function Card(x, y, cardWidth, cardHeight, icon, rightText, bottomLeftTex
 // Helper function to create text using TextGeometry
 // might be better to try 2d fonts: https://discourse.threejs.org/t/how-do-i-place-2d-text-over-3d-card-element/58080/40
 // or using canvas: https://discourse.threejs.org/t/writing-2d-text-onto-a-surface/18264/3
-function addText(text, section, yOffset = 0) {
+export function addText(text, section, yOffset = 0) {
     const fontLoader = new FontLoader();
     fontLoader.load(
-      'node_modules/three/examples/fonts/droid/droid_serif_regular.typeface.json',
+      './Press Start 2P_Regular.json', // Use local font from public folder
       (droidFont) => {
         const textGeometry = new TextGeometry(text, {
-          size: 5,
+          size: 4,
           depth: 4,
           font: droidFont,
         });

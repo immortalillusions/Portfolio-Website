@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {tilesPerRow, tileSize, maxTilePlayer, minTilePlayer, maxTileIndex, minTileIndex} from '../constants.js';
 import {Tree} from "./Tree.js"
-export function Grass(yPosition, color = 0x50C878, addTrees = false) {
+export function Grass(yPosition, color = 0x50C878, addTrees = false, behindPlayer = false) {
     const grass = new THREE.Group();
     grass.position.y = yPosition; // y position
 
@@ -24,12 +24,20 @@ export function Grass(yPosition, color = 0x50C878, addTrees = false) {
     if(addTrees){
         // trees beyond boundary
         const occupiedTiles = new Set();
-        // don't add trees into player walkable area
-        for (let i = minTilePlayer; i<maxTilePlayer+1; i++){
-            occupiedTiles.add(i)
+        if(!behindPlayer){
+            // don't add trees into player walkable area
+            for (let i = minTilePlayer; i<maxTilePlayer+1; i++){
+                occupiedTiles.add(i)
+            }
         }
         // Reduced tree count for better performance
-        const treeCount = Math.floor(Math.random() * 1) + 1; // 2 to 5 trees instead of 10-20
+        let treeCount;
+        if(behindPlayer){
+            treeCount = Math.floor(Math.random() * 3) + 3; // more trees behind player
+        }
+        else {
+            treeCount = Math.floor(Math.random() * 1) + 1; // 2 to 5 trees instead of 10-20
+        }    
         for (let i = 0; i < treeCount; i++) {
             let x;
             do {

@@ -17,6 +17,15 @@
         <button id="right" class="col-start-3 row-start-2 bg-white text-black p-2 rounded hover:bg-gray-200 border border-gray-300" style="box-shadow: 3px 5px 0px 0px rgba(0,0,0,0.75)"><span class="rotate-right inline-block">&#9650;</span></button>
       </div>
     </div>
+    <div id="score" class="absolute top-5 left-5 text-base text-white">Can you find the game?</div>
+    <div id="result-container" class="absolute w-full h-full top-0 flex items-center justify-center hidden">
+      <div id="result" class="flex flex-col items-center bg-white p-5 rounded-lg shadow-lg">
+        <h1 id="message" class="text-xl font-bold mb-4">Game Over</h1>
+        <p class="text-lg mb-4">Your score: <span id="final-score" class="font-bold"></span></p>
+        <p class="text-base mb-4">High score: <span id="high-score" class="font-bold">0</span></p>
+        <button id="retry" class="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded cursor-pointer font-inherit">Retry</button>
+      </div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

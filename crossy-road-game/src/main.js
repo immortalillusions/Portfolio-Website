@@ -2,19 +2,19 @@ import * as THREE from 'three';
 import './style.css'
 import Renderer from "./components/Renderer.js";
 import Camera from "./components/Camera.js";
-import {player} from "./components/Player.js";
+import {player, position, pos} from "./components/Player.js";
 import {map, initializeMap, otherObjects} from "./components/Map.js";
 import { PointLight } from './components/PointLight.js';
 import { animateVehicles } from './animateVehicles.js';
-import { animatePlayer } from './animatePlayer.js';
+import { animatePlayer, resetPlayerState } from './animatePlayer.js';
 import { CameraControls } from './components/CameraControls.js';
 import './collectUserInput.js'; 
 import { setCameraTarget } from "./components/Camera.js";
-import { position } from "./components/Player.js";
 import { animatePokeball } from './components/Pokeball.js';
-import { size } from './constants.js';
+import { tileSize } from './constants.js';
 import { ClickHandler } from './components/ClickHandler.js';
 import { DirectionalLight } from './components/DirectionalLight.js';
+import {hitVehicle} from "./utilities/hitVehicle.js";
 
 const scene = new THREE.Scene();
 scene.add(player);
@@ -70,11 +70,26 @@ const cameraControls = new CameraControls(camera, renderer.domElement);
 // Initialize click handler for 3D objects
 const clickHandler = new ClickHandler(camera, scene, renderer, ambientLight);
 
+const resultDOM = document.getElementById("result-container")
+const scoreDOM = document.getElementById("score");
+
+document.querySelector("#retry")?.addEventListener("click", initializeGame);
+
 // call before rendering or else empty map
 initializeGame();
 
 function initializeGame() {
+    // Reset player state first
+    resetPlayerState();
+    
     initializeMap();
+    if (scoreDOM) {
+        scoreDOM.innerText = "Can you find the game?";
+        scoreDOM.style.fontSize = "16px";
+    }
+    if (resultDOM) {
+        resultDOM.classList.add("hidden");
+    } 
 }
 
 // Handle window resize
@@ -92,9 +107,14 @@ renderer.setAnimationLoop(animate);
 
 // Animation loop
 function animate() {
-    animateVehicles();
-    animatePlayer(player, camera); // Pass camera to player animation
-    
+    if(resultDOM.classList.contains("hidden")){
+        animateVehicles();
+        animatePlayer(player, camera); // Pass camera to player animation
+        if(position.currentY >= 0){
+            hitVehicle();
+        }
+    }
+
     // Update directional light position to follow player
     directionalLight.position.set(
         player.position.x + lightOffset.x,

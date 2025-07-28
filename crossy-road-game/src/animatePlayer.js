@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {movesQueue, position} from "./components/Player.js";
+import {movesQueue, position, pos, player} from "./components/Player.js";
 import { addRows, metadata, otherObjects, countObjectsInMap } from './components/Map.js';
 import { endsUpInValidPosition } from './utilities/endsUpInValidPosition.js';
 import { tileSize } from './constants.js';
@@ -8,9 +8,23 @@ import { tileSize } from './constants.js';
 // clock is used to animate player movement; it is PER step
 const moveClock = new THREE.Clock(false);
 
+let score = 0;
+
 let adjustedPosition = { x: position.currentX, y: position.currentY };
 
 const numberObjects = countObjectsInMap(otherObjects); // initial count of objects in the map
+
+// Reset function for game restart
+export function resetPlayerState() {
+    score = 0;
+    moveClock.stop();
+    // reset player
+    position.currentX = pos[0] * tileSize;
+    position.currentY = pos[1] * tileSize;  
+    player.position.x = pos[0] * tileSize; 
+    player.position.y = pos[1] * tileSize; 
+    adjustedPosition = { x: position.currentX, y: position.currentY };
+}
 
 // although player moves in discrete steps, this animates that smoothly
 export function animatePlayer(player, camera) {
@@ -39,6 +53,19 @@ export function animatePlayer(player, camera) {
         position.currentX = adjustedPosition.x;
         position.currentY = adjustedPosition.y;
         moveClock.stop();
+        // Update score
+        const scoreDOM = document.getElementById("score");
+        if (scoreDOM) {
+            const oldScore = score;
+            score = 1+Math.floor(position.currentY/tileSize)
+            if (oldScore < score && score >= 0) {
+                scoreDOM.innerText = score.toString();
+                scoreDOM.style.fontSize = "40px"; // Set custom font size
+            } else {
+                score = oldScore;
+            }
+            
+        }
     }
 }
 

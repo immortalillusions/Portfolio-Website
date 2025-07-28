@@ -52,10 +52,10 @@ export function Sign(x, y, width, height, text, color, vertical = 5, horizontal 
 
     const fontLoader = new FontLoader();
         fontLoader.load(
-          'node_modules/three/examples/fonts/droid/droid_serif_regular.typeface.json',
+          './Press Start 2P_Regular.json',
           (droidFont) => {
             const textGeometry = new TextGeometry(text, {
-              size: 5,
+              size: 4,
               depth: 2,
               font: droidFont,
             });

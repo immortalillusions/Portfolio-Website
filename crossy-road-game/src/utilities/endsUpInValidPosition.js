@@ -43,23 +43,24 @@ export function endsUpInValidPosition(camera) {
     // Convert to tile coordinates and expand by 10 tiles in each direction
     // UPDATE DEPENDING ON THE SIZE OF MY BIGGEST OBJECT
     // This ensures we check a reasonable range around the final position
-    const startTileY = (Math.floor(minY / tileSize) - 10) * tileSize;
+    // don't need to check items out of bounds
+    const startTileY = Math.max((Math.floor(minY / tileSize) - 10), bottomMap) * tileSize;
     const endTileY = (Math.floor(maxY / tileSize) + 10) * tileSize;
     
     // Only iterate through rows in the target y-coordinate range
     for (let checkY = startTileY; checkY <= endTileY; checkY += tileSize) {
-        const rows = metadata.get(checkY);
+        const items = metadata.get(checkY);
         
         // Skip if no objects at this y-coordinate
-        if (!rows) continue;
+        if (!items) continue;
         
     // Check collision with all objects at this y-coordinate
     // hit tree
-        for (const row of rows) {
-            if (row.type === "forest") {
-                for (const tree of row.trees) {
+        for (const item of items) {
+            if (item.type === "forest") {
+                for (const tree of item.trees) {
                     const result = checkBounds("tree", startX, startY, finalPosition.x, finalPosition.y,
-                        tree.x, row.y, treeBoundSize, treeBoundSize);
+                        tree.x, item.y, treeBoundSize, treeBoundSize);
                     // Only update if there was a collision (position changed)
                     if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
                         x = result[0];
@@ -92,9 +93,9 @@ export function endsUpInValidPosition(camera) {
                     // }
                 }
             }
-            if (row.type === "card") {
+            if (item.type === "card") {
                 const result = checkBounds("card", startX, startY, finalPosition.x, finalPosition.y,
-                    row.card.x, row.y, row.card.cardWidth, row.card.cardHeight);
+                    item.card.x, item.y, item.card.cardWidth, item.card.cardHeight);
                 // Only update if there was a collision (position changed)
                 if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
                     x = result[0];
@@ -132,9 +133,9 @@ export function endsUpInValidPosition(camera) {
                 //     }
                 // }
             }
-            if (row.type === "sign") {
+            if (item.type === "sign") {
                 const result = checkBounds("sign", startX, startY, finalPosition.x, finalPosition.y,
-                    row.sign.x, row.y, row.sign.width, 5); // thickness instead of height
+                    item.sign.x, item.y, item.sign.width, 5); // thickness instead of height
                 // Only update if there was a collision (position changed)
                 if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
                     x = result[0];

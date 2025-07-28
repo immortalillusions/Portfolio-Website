@@ -1,24 +1,24 @@
 import * as THREE from 'three';
 import { minTileIndex, maxTileIndex, tileSize } from '../constants';
 
-export function generateRows(amount) {
+export function generateRows(amount, difficulty) {
     const rows = [];
     for (let i = 0; i < amount; i++){
-        const rowData = generateRow();
+        const rowData = generateRow(difficulty);
         rows.push(rowData);
     }
     return rows;
 }
 
 // either car, truck, or forest
-function generateRow() {
+function generateRow(difficulty) {
     const type = randomElement(["car", "truck", "forest"]);
-    if (type == "car") return generateVehicleLaneMetadata("car");
-    if (type == "truck") return generateVehicleLaneMetadata("truck");
+    if (type == "car") return generateVehicleLaneMetadata("car", difficulty);
+    if (type == "truck") return generateVehicleLaneMetadata("truck", difficulty);
     return generateForestLaneMetadata();
 }
 
-function randomElement(array) {
+export function randomElement(array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
@@ -26,7 +26,7 @@ function generateForestLaneMetadata() {
     const trees = [];
     const occupiedTiles = new Set();
     // 110 tiles wide so generate max 20 trees
-    const treeCount = Math.floor(Math.random() * 10) + 10; // 10 to 20 trees
+    const treeCount = Math.floor(Math.random() * 5) + 1; // 1 to 6 trees
     for (let i = 0; i < treeCount; i++) {
         let x;
         do {
@@ -42,17 +42,17 @@ function generateForestLaneMetadata() {
     };
 }
 
-function generateVehicleLaneMetadata(vehicle) {
+function generateVehicleLaneMetadata(vehicle, difficulty) {
     const direction = randomElement([true, false]); // true: right, false: left
-    const speed = randomElement([100, 120, 150, 200]); // random speed
+    const speed = randomElement([100, 120, 150, 200])*(1+difficulty*0.25); // random speed
     const vehicles = [];
     const occupiedTiles = new Set();
 
     let vehicleCount;
     if (vehicle === "car") {
-        vehicleCount = Math.floor(Math.random() * 10) + 5; // 5 to 15 vehicles
+        vehicleCount = Math.floor(Math.random() * 3) + 5; // 3 to 8 vehicles
     } else {
-        vehicleCount = Math.floor(Math.random() * 7) + 3; // 3 to 10 trucks
+        vehicleCount = Math.floor(Math.random() * 1) + 3; // 1 to 3 trucks
     }
     for (let i = 0; i < vehicleCount; i++) {
         let initialX;
