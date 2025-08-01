@@ -9,6 +9,12 @@ export class ClickHandler {
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
         
+        // Touch tracking for better mobile experience
+        this.touchStartTime = 0;
+        this.touchStartPosition = { x: 0, y: 0 };
+        this.maxTapDuration = 300; // Max time for a tap (ms)
+        this.maxTapDistance = 10; // Max movement for a tap (pixels)
+        
         // Define available skybox sets
         this.skyboxSets = {
             day: [
@@ -36,17 +42,54 @@ export class ClickHandler {
     }
     
     setupEventListeners() {
+        // Mouse events for desktop
         this.renderer.domElement.addEventListener('click', this.onClick.bind(this));
         this.renderer.domElement.addEventListener('mousemove', this.onMouseMove.bind(this));
+        
+        // Touch events for mobile
+        this.renderer.domElement.addEventListener('touchstart', this.onTouchStart.bind(this));
+        this.renderer.domElement.addEventListener('touchend', this.onTouchEnd.bind(this));
+        this.renderer.domElement.addEventListener('touchmove', this.onTouchMove.bind(this));
     }
     
     onClick(event) {
         event.preventDefault();
-        
-        // Calculate mouse position in normalized device coordinates
+        this.handlePointerEvent(event.clientX, event.clientY);
+    }
+    
+    onTouchStart(event) {
+        // Track touch start for tap detection
+        if (event.touches.length === 1) {
+            const touch = event.touches[0];
+            this.touchStartTime = Date.now();
+            this.touchStartPosition.x = touch.clientX;
+            this.touchStartPosition.y = touch.clientY;
+        }
+    }
+    
+    onTouchEnd(event) {
+        // Only handle single finger taps that are quick and didn't move much
+        if (event.changedTouches.length === 1) {
+            const touch = event.changedTouches[0];
+            const touchDuration = Date.now() - this.touchStartTime;
+            const touchDistance = Math.sqrt(
+                Math.pow(touch.clientX - this.touchStartPosition.x, 2) +
+                Math.pow(touch.clientY - this.touchStartPosition.y, 2)
+            );
+            
+            // Only register as tap if it was quick and didn't move much
+            if (touchDuration <= this.maxTapDuration && touchDistance <= this.maxTapDistance) {
+                event.preventDefault();
+                this.handlePointerEvent(touch.clientX, touch.clientY);
+            }
+        }
+    }
+    
+    handlePointerEvent(clientX, clientY) {
+        // Calculate pointer position in normalized device coordinates
         const rect = this.renderer.domElement.getBoundingClientRect();
-        this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        this.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
         
         // Update the raycaster with camera and mouse position
         this.raycaster.setFromCamera(this.mouse, this.camera);
@@ -79,10 +122,22 @@ export class ClickHandler {
     }
     
     onMouseMove(event) {
+        this.handlePointerMove(event.clientX, event.clientY);
+    }
+    
+    onTouchMove(event) {
+        // Only handle single finger for hover effects
+        if (event.touches.length === 1) {
+            const touch = event.touches[0];
+            this.handlePointerMove(touch.clientX, touch.clientY);
+        }
+    }
+    
+    handlePointerMove(clientX, clientY) {
         // Optional: Change cursor when hovering over clickable objects
         const rect = this.renderer.domElement.getBoundingClientRect();
-        this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        this.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
         
         this.raycaster.setFromCamera(this.mouse, this.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children, true);

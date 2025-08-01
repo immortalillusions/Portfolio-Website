@@ -3,8 +3,9 @@ import { setShadowsRecursively } from '../constants';
 import { Tree } from './Tree.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+import {Sign} from "./Sign"
 
-export function Card(x, y, cardWidth, cardHeight, icon, rightText, bottomLeftText) {
+export function Card(x, y, cardWidth, cardHeight, icon, rightText, bottomLeftText, rotation = [0,0,0]) {
     const card = new THREE.Group();
     card.position.x = x;
     card.position.y = y;
@@ -123,6 +124,9 @@ export function Card(x, y, cardWidth, cardHeight, icon, rightText, bottomLeftTex
     // topLeftSection.userData = { clickable: true, url: card.userData.url };
     // bottomLeftSection.userData = { clickable: true, url: card.userData.url };
 
+    card.rotation.set(rotation[0], rotation[1], rotation[2]);
+    const sign = Sign(cardWidth / 4, cardHeight/2 - cardThickness, cardWidth / 2, 60, "POKIGUESS\nPan down for\nmore details!", 0x6a5acd, 5, -40, null, false)
+    card.add(sign)
     setShadowsRecursively(card, true, true);
     return card;
 }
@@ -130,7 +134,7 @@ export function Card(x, y, cardWidth, cardHeight, icon, rightText, bottomLeftTex
 // Helper function to create text using TextGeometry
 // might be better to try 2d fonts: https://discourse.threejs.org/t/how-do-i-place-2d-text-over-3d-card-element/58080/40
 // or using canvas: https://discourse.threejs.org/t/writing-2d-text-onto-a-surface/18264/3
-export function addText(text, section, yOffset = 0) {
+export function addText(text, section, yOffset = 0, xOffset = -40) {
     const fontLoader = new FontLoader();
     fontLoader.load(
       './Press Start 2P_Regular.json', // Use local font from public folder
@@ -145,7 +149,7 @@ export function addText(text, section, yOffset = 0) {
             flatShading: true
         });
         const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-        textMesh.position.x = -40;
+        textMesh.position.x = xOffset;
         textMesh.position.y = yOffset; // middle
 
         // Make text clickable

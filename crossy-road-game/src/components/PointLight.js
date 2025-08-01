@@ -16,8 +16,8 @@ export function PointLight() {
     light.castShadow = true;
 
     // Higher resolution for better shadow quality
-    light.shadow.mapSize.width = 4096;
-    light.shadow.mapSize.height = 4096;
+    light.shadow.mapSize.width = 2048;
+    light.shadow.mapSize.height = 2048;
     
     // Center the shadow camera over the map area
     light.shadow.camera.up.set(0, 0, 1);

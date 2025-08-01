@@ -32,7 +32,8 @@ function handleContinuousInput() {
 // Call handleContinuousInput every frame
 setInterval(handleContinuousInput, 16); // ~60fps
 
-// Button event handlers
+// Button event handlers - Support both mouse and touch events
+// Forward button
 document.getElementById('forward').addEventListener('mousedown', () => {
     buttonsPressed.forward = true;
 });
@@ -42,7 +43,17 @@ document.getElementById('forward').addEventListener('mouseup', () => {
 document.getElementById('forward').addEventListener('mouseleave', () => {
     buttonsPressed.forward = false;
 });
+// Touch events for mobile
+document.getElementById('forward').addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevent scrolling
+    buttonsPressed.forward = true;
+});
+document.getElementById('forward').addEventListener('touchend', (e) => {
+    e.preventDefault();
+    buttonsPressed.forward = false;
+});
 
+// Backward button
 document.getElementById('backward').addEventListener('mousedown', () => {
     buttonsPressed.backward = true;
 });
@@ -52,7 +63,17 @@ document.getElementById('backward').addEventListener('mouseup', () => {
 document.getElementById('backward').addEventListener('mouseleave', () => {
     buttonsPressed.backward = false;
 });
+// Touch events for mobile
+document.getElementById('backward').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    buttonsPressed.backward = true;
+});
+document.getElementById('backward').addEventListener('touchend', (e) => {
+    e.preventDefault();
+    buttonsPressed.backward = false;
+});
 
+// Left button
 document.getElementById('left').addEventListener('mousedown', () => {
     buttonsPressed.left = true;
 });
@@ -62,7 +83,17 @@ document.getElementById('left').addEventListener('mouseup', () => {
 document.getElementById('left').addEventListener('mouseleave', () => {
     buttonsPressed.left = false;
 });
+// Touch events for mobile
+document.getElementById('left').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    buttonsPressed.left = true;
+});
+document.getElementById('left').addEventListener('touchend', (e) => {
+    e.preventDefault();
+    buttonsPressed.left = false;
+});
 
+// Right button
 document.getElementById('right').addEventListener('mousedown', () => {
     buttonsPressed.right = true;
 });
@@ -70,6 +101,15 @@ document.getElementById('right').addEventListener('mouseup', () => {
     buttonsPressed.right = false;
 });
 document.getElementById('right').addEventListener('mouseleave', () => {
+    buttonsPressed.right = false;
+});
+// Touch events for mobile
+document.getElementById('right').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    buttonsPressed.right = true;
+});
+document.getElementById('right').addEventListener('touchend', (e) => {
+    e.preventDefault();
     buttonsPressed.right = false;
 });
 
@@ -137,3 +177,32 @@ window.addEventListener('blur', () => {
     Object.keys(keysPressed).forEach(key => keysPressed[key] = false);
     Object.keys(buttonsPressed).forEach(key => buttonsPressed[key] = false);
 });
+
+// Prevent default touch behaviors on control buttons to improve mobile experience
+document.addEventListener('DOMContentLoaded', () => {
+    const controlButtons = ['forward', 'backward', 'left', 'right'];
+    controlButtons.forEach(buttonId => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            // Prevent context menu on long press
+            button.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+            });
+            
+            // Prevent text selection
+            button.style.userSelect = 'none';
+            button.style.webkitUserSelect = 'none';
+            
+            // Add touch-action to prevent scrolling
+            button.style.touchAction = 'manipulation';
+        }
+    });
+});
+
+// Prevent page scrolling when touching control areas on mobile
+document.addEventListener('touchmove', (e) => {
+    // Only prevent if touching a control button
+    if (e.target && ['forward', 'backward', 'left', 'right'].includes(e.target.id)) {
+        e.preventDefault();
+    }
+}, { passive: false });

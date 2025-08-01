@@ -8,8 +8,34 @@
     <script src="https://cdn.tailwindcss.com"></script> <!-- Tailwind CSS for styling -->
   </head>
   <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 flex flex-col items-center justify-center" style="z-index: 1000; background-image: url('./Day_Back.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+      <div class="text-black text-center">
+        <h1 id="loading-title" class="text-xl md:text-4xl mb-8" style="font-family: 'Press Start 2P', monospace; font-display: block;"></h1>
+        
+        <!-- Start Game Button (shown initially) -->
+        <div id="start-button-container" class="mb-8">
+          <button id="start-game-btn">
+            START EXPERIENCE
+          </button>
+          <p class="text-sm mt-4 opacity-75" style="font-family: 'Press Start 2P', monospace; font-display: block;">It's nice to meet you!</p>
+        </div>
+        
+        <!-- Loading Elements (hidden initially) -->
+        <div id="loading-elements" class="hidden flex flex-col items-center justify-center">
+          <div class="loading-spinner mb-4">
+            <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-black border-t-transparent"></div>
+          </div>
+          <p id="loading-text" class="text-sm md:text-base mb-4" style="font-family: 'Press Start 2P', monospace; font-display: block;">Loading...</p>
+          <div class="w-64 bg-gray-300 rounded-full h-2 mx-auto">
+            <div id="loading-bar" class="bg-black h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <canvas class="game"></canvas>
-    <div id="controls" class="absolute bottom-5 min-w-full flex items-end justify-center">
+    <div id="controls" class="absolute bottom-14 min-w-full flex items-end justify-center">
       <div class="grid grid-rows-2 gap-4 h-20 w-48">
         <button id="forward" class="col-start-2 row-start-1 bg-white text-black p-2 rounded hover:bg-gray-200 border border-gray-300" style="box-shadow: 3px 5px 0px 0px rgba(0,0,0,0.75)">&#9650;</button>
         <button id="backward" class="col-start-2 row-start-2 bg-white text-black p-2 rounded hover:bg-gray-200 border border-gray-300" style="box-shadow: 3px 5px 0px 0px rgba(0,0,0,0.75)">&#9660;</button>
@@ -17,7 +43,9 @@
         <button id="right" class="col-start-3 row-start-2 bg-white text-black p-2 rounded hover:bg-gray-200 border border-gray-300" style="box-shadow: 3px 5px 0px 0px rgba(0,0,0,0.75)"><span class="rotate-right inline-block">&#9650;</span></button>
       </div>
     </div>
-    <div id="score" class="absolute top-5 left-5 text-base text-white">Can you find the game?</div>
+    <button id="greeting">Hi! I'm Joanna,<br>Welcome to my site!</button>
+    <button id="skybox-toggle"><span class="emoji-center">☀︎</span></button>
+    <div id="score" class="absolute bottom-3 left-5 text-base text-white">Can you find the game?</div>
     <div id="result-container" class="absolute w-full h-full top-0 flex items-center justify-center hidden">
       <div id="result" class="flex flex-col items-center bg-white p-5 rounded-lg shadow-lg">
         <h1 id="message" class="text-xl font-bold mb-4">Game Over</h1>

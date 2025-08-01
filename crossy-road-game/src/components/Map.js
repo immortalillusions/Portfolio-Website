@@ -9,6 +9,9 @@ import {Sign} from './Sign.js';
 import { tileSize, bottomMap, grassBehindPlayer } from '../constants.js';
 import { Pokeball } from './Pokeball.js';
 import { generateRows } from '../utilities/generateRows.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const gloader = new GLTFLoader(); // create loader
 
 // initial metadata: need to add cards / initial items to a metadata
 // also because we need to calculate hit bounds
@@ -75,28 +78,29 @@ export const otherObjects = new Map([
         y: -4 * tileSize
     }]],
     
-    [-35 * tileSize, [{
+    [-41 * tileSize, [{
         type: "card",
         card: {
-            x: -2 * tileSize,
+            x: 15 * tileSize,
             cardWidth: 200,
             cardHeight: 150,
             icon: Pokeball(),
             rightText: "Guess and catch\nPokemon!\nMade with\nPokeAPI",
-            bottomLeftText: "PokiGuess\n2020-2023\nFull-time"
+            bottomLeftText: "PokiGuess\n2020-2023\nFull-time",
+            rotation: [0,0, -Math.PI/2]
         },
-        y: -35 * tileSize
+        y: -41 * tileSize
     }]],
     [-42 * tileSize, [{
         type: "sign",
         sign: {
             x: 1 * tileSize,
-            width: 100,
+            width: 150,
             height: 50,
-            text: "Hey there,\nI'm Joanna!\nWelcome to\nmy site!",
+            text: "Welcome :D\nLet's start by \nmoving your camera down\nHold and drag!",
             color: 0xf8e8e8,
             vertical: 10,
-            horizontal: -25,
+            horizontal: -60,
         },
         y: -42 * tileSize
     }]],
@@ -113,7 +117,22 @@ export const otherObjects = new Map([
             toggleSkybox: true
         },
         y: -30 * tileSize
-    }]]
+    }]],
+    [-43*tileSize, [{
+        type: "model",
+        path: '/models/Regigigas.gltf',
+        x: -70, 
+        z: 0,
+        rx: Math.PI/2,
+        ry: Math.PI,
+        rz: 0,
+        scale: 10,
+        // width, height useful for checking for bounds
+        width: 50,
+        height: 50,
+        y: -43*tileSize
+    }]]    
+
 ]);
 
 export function countObjectsInMap(map) {
@@ -126,11 +145,20 @@ export function countObjectsInMap(map) {
 
 export const map = new THREE.Group();
 
+// Export array of mixers for animation updates
+export let modelMixers = [];
+
+// Array of references to models
+export let models = [];
+
 export function initializeMap(){
     // Clear the map completely (allows completely newly regenerated random map)
     map.clear();
     // Clear metadata
     metadata.clear();
+    // Reset mixers array
+    modelMixers = [];
+    models = [];
     // Create grass rows before player (negative Y values)
     for (let i = 0; i > bottomMap - grassBehindPlayer; i--) {
         if (i == 0){
@@ -153,9 +181,53 @@ export function initializeMap(){
     populateRows(metadata);
     // Add the new rows
     addRows();  
-
+    // play with models
+    
+   // loadModel(gloader, '/models/Regigigas.gltf', -50, -43*tileSize, 0, Math.PI/2, Math.PI, 0, 10);
     // Items that I can walk through
-    addText("Move camera with mouse", map, -44*tileSize)
+    addText("Nice! Now you can\nmove your camera.\nUse WASD/buttons to explore!"+
+        "\n<- Experiences"+
+        "\n-> Projects"+
+        "\nOr go forward to find\nthe hidden game!", map, -43.5*tileSize)
+
+    addText("<---------\nExperiences", map, -44*tileSize, -200)
+    addText("--------->\nProjects", map, -44*tileSize, 200)
+}
+
+function loadModel(loader, path, x, y, z, rx, ry, rz, scale){
+    // Load a glTF resource
+    // happens asynchronously so can't edit position outside of this function
+    loader.load(
+        // resource URL
+        path,
+        // called when the resource is loaded
+        function ( gltf ) {
+        const ref = gltf.scene
+        const animation = gltf.animations;
+        const mixer = new THREE.AnimationMixer(gltf.scene);
+        modelMixers.push(mixer); // Add to mixers array
+        const action = mixer.clipAction(animation[0]); // play the first animation
+        ref.position.set(x, y, z); // set position
+        ref.scale.set(scale, scale, scale); // Scale the model up
+        ref.rotation.x = rx; 
+        ref.rotation.y = ry;
+        ref.rotation.z = rz;
+        
+        // Add light and helper to the scene in world coordinates
+        // Point light is measured in candles so need a very big number
+        const light = new THREE.PointLight(0xffffff, 7500, 2000);         
+        light.position.set(x, y, z + 70); // World position: above the model in Z
+        
+        const helper = new THREE.PointLightHelper(light, 50, 0xff0000); // Red helper for visibility
+        
+        // Add to the map (scene) instead of the model (bc when i scale model, that messes with the coordinates for its children too)
+        map.add(light);
+        map.add(helper);
+
+        map.add( gltf.scene );
+        models.push(ref);
+        action.play();
+    },);
 }
 
 export function populateRows(data) {
@@ -164,7 +236,7 @@ export function populateRows(data) {
         for (const object of objectsAtY) {
             const y = object.y
             if (object.type === "card") {
-                const card = Card(object.card.x, y, object.card.cardWidth, object.card.cardHeight, object.card.icon, object.card.rightText, object.card.bottomLeftText);
+                const card = Card(object.card.x, y, object.card.cardWidth, object.card.cardHeight, object.card.icon, object.card.rightText, object.card.bottomLeftText, object.card.rotation);
                 map.add(card);
                 object.ref = card;
             }
@@ -172,6 +244,8 @@ export function populateRows(data) {
                 const sign = Sign(object.sign.x, y, object.sign.width, object.sign.height, object.sign.text, object.sign.color, object.sign.vertical, object.sign.horizontal, object.sign.skybox, object.sign.toggleSkybox);
                 map.add(sign);
                 object.ref = sign;
+            } else if (object.type === "model") {
+                loadModel(gloader, object.path, object.x, object.y, object.z, object.rx, object.ry, object.rz, object.scale);
             }
 
             // first row of the metadata is the second row, after the starting row (which is not included in the metadata)

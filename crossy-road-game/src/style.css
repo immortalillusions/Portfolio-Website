@@ -1,8 +1,211 @@
-@import url("https://fonts.googleapis.com/css?family=Press+Start+2P");
+@import url("https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap");
 
 body {
   margin: 0;
   display: flex;
+}
+
+/* Enhanced Greeting Button Styles */
+#greeting {
+  font-family: 'Press Start 2P', monospace ;
+  background: linear-gradient(135deg, #f0f0f0, #d0d0d0) ;
+  box-shadow: 6px 6px 0px 0px rgba(0,0,0,0.8);
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.8) ;
+  transition: all 0.15s ease ;
+  cursor: pointer ;
+  position: absolute ;
+  overflow: hidden ;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+  z-index: 100 ;
+  top: 1.25rem ;
+  left: 1.25rem ;
+  width: 16rem ;
+  font-size: 0.75rem ;
+  color: black ;
+  padding: 0.5rem 0.75rem ;
+}
+
+@media (min-width: 768px) {
+  #greeting {
+    width: 24rem ;
+    font-size: 1rem ;
+    padding: 0.75rem ;
+  }
+}
+
+#greeting:hover {
+  background: linear-gradient(135deg, #ffffff, #e0e0e0) ;
+  box-shadow: 7px 7px 0px 0px rgba(0,0,0,0.8);
+  transform: translate(-1px, -1px) ;
+}
+
+#greeting:active {
+  background: linear-gradient(135deg, #d0d0d0, #b0b0b0) ;
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.8);
+  transform: translate(2px, 2px) ;
+}
+
+/* Collapsed greeting button (">") */
+#greeting.collapsed {
+  border-radius: 8px ;
+  background: linear-gradient(135deg, #ffffff, #e0e0e0) ;
+  color: black ;
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.8) ;
+  animation: pulseGlow 2s ease-in-out infinite alternate ;
+  width: 2.5rem ;
+  height: 2.5rem ;
+}
+
+#greeting.collapsed:hover {
+  background: linear-gradient(135deg, #ffffff, #e0e0e0) ;
+  animation: none ;
+}
+
+/* Skybox Toggle Button - same style as collapsed greeting */
+#skybox-toggle {
+  font-family: 'Press Start 2P', monospace ;
+  font-size: 1.5rem ;
+  position: absolute ;
+  top: 1.25rem ;
+  right: 1.25rem ;
+  z-index: 100 ;
+  cursor: pointer ;
+  transition: all 0.15s ease ;
+  border-radius: 8px ;
+  background: linear-gradient(135deg, #ffffff, #e0e0e0) ;
+  color: black ;
+  animation: pulseGlow 2s ease-in-out infinite alternate ;
+  width: 2.5rem ;
+  height: 2.5rem ;
+  box-shadow: 6px 6px 0px 0px rgba(0,0,0,0.8);
+ 
+}
+
+.emoji-center {
+  /*Need to center manually*/
+  position: relative ;
+  top: -2px ;
+
+}
+
+#skybox-toggle:hover {
+  background: linear-gradient(135deg, #ffffff, #e0e0e0) ;
+  box-shadow: 7px 7px 0px 0px rgba(0,0,0,0.8);
+  transform: translate(-1px, -1px) ;
+  animation: none ;
+}
+
+/* Expanded greeting button */
+#greeting.expanded {
+  animation: slideIn 0.3s ease-out ;
+  border-radius: 4px ;
+}
+
+@keyframes pulseGlow {
+  0% { 
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.8), 0 0 10px rgba(74,144,226,0.5) ;
+  }
+  100% { 
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.8), 0 0 20px rgba(74,144,226,0.8) ;
+  }
+}
+
+/* Expanded greeting button animation */
+#greeting.expanded {
+  animation: slideIn 0.3s ease-out ;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: scale(0.8) ;
+    opacity: 0 ;
+  }
+  100% {
+    transform: scale(1) ;
+    opacity: 1 ;
+  }
+}
+
+/* Loading Screen Styles */
+#loading-screen {
+  font-family: 'Press Start 2P', monospace;
+  z-index: 1000;
+}
+
+#loading-title {
+  text-shadow: 2px 2px 0px #fff;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#loading-title::after {
+  content: '|';
+  animation: blink 1s infinite;
+  color: black;
+}
+
+#loading-title.no-cursor::after {
+  display: none;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+
+/* Start Game Button */
+#start-game-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-display: block;
+  background-color: white;
+  color: black;
+  padding: 1rem 2rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  border: 4px solid #d1d5db;
+  text-shadow: 1px 1px 0px #999;
+  animation: buttonPulse 2s ease-in-out infinite alternate;
+  transform: perspective(100px) rotateX(5deg);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+#start-game-btn:hover {
+  background-color: #f3f4f6;
+  transform: perspective(100px) rotateX(0deg) scale(1.05);
+  box-shadow: 6px 8px 0px 0px rgba(255,255,255,0.4) ;
+}
+
+#start-game-btn:active {
+  transform: perspective(100px) rotateX(0deg) scale(0.95);
+  box-shadow: 2px 3px 0px 0px rgba(255,255,255,0.2) ;
+}
+
+@keyframes buttonPulse {
+  0% { box-shadow: 4px 6px 0px 0px rgba(255,255,255,0.3); }
+  100% { box-shadow: 4px 6px 0px 0px rgba(255,255,255,0.6); }
+}
+
+.spinner-border {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#loading-text {
+  animation: textPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes textPulse {
+  0% { opacity: 0.7; }
+  100% { opacity: 1; }
 }
 
 #score {

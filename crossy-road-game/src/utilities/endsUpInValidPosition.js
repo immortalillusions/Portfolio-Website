@@ -95,7 +95,7 @@ export function endsUpInValidPosition(camera) {
             }
             if (item.type === "card") {
                 const result = checkBounds("card", startX, startY, finalPosition.x, finalPosition.y,
-                    item.card.x, item.y, item.card.cardWidth, item.card.cardHeight);
+                    item.card.x, item.y, item.card.cardHeight, item.card.cardWidth); // swap width and height bc card is rotated
                 // Only update if there was a collision (position changed)
                 if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
                     x = result[0];
@@ -136,6 +136,15 @@ export function endsUpInValidPosition(camera) {
             if (item.type === "sign") {
                 const result = checkBounds("sign", startX, startY, finalPosition.x, finalPosition.y,
                     item.sign.x, item.y, item.sign.width, 5); // thickness instead of height
+                // Only update if there was a collision (position changed)
+                if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
+                    x = result[0];
+                    y = result[1];
+                }
+            }
+            else if (item.type === "model") {
+                const result = checkBounds("model", startX, startY, finalPosition.x, finalPosition.y,
+                    item.x, item.y, item.width, item.height); // thickness instead of height
                 // Only update if there was a collision (position changed)
                 if (result[0] !== finalPosition.x || result[1] !== finalPosition.y) {
                     x = result[0];

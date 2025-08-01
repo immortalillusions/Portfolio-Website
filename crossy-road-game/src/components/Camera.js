@@ -11,15 +11,15 @@ export default function Camera(){
     
     // set z axis as the axis pointing upwards
     camera.up.set(0,0,1); 
-    // Position camera at same initial location
-    camera.position.set(size, -size, size);
+    // Position camera at same initial location with player's position (0, -size, 50)
+    camera.position.set(0, -size, 50);
     camera.lookAt(0, 0, 0);
     
-    // Add rotation state (same as before)
+    // Add rotation state
     camera.userData = {
-        rotationX: Math.atan2(-size, size),
-        rotationY: Math.atan2(size, Math.sqrt(size*size + size*size)),
-        distance: Math.sqrt(size*size + size*size + size*size),
+        rotationX: Math.atan2(-size, 0), // X=0
+        rotationY: Math.atan2(50, Math.sqrt(0*0 + size*size)), // Z=50
+        distance: Math.sqrt(0*0 + size*size + 50*50),
         target: new THREE.Vector3(0, 0, 0)
     };
     

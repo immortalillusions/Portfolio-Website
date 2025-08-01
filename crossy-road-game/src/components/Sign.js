@@ -65,7 +65,7 @@ export function Sign(x, y, width, height, text, color, vertical = 5, horizontal 
             });
             const textMesh = new THREE.Mesh(textGeometry, textMaterial);
             textMesh.position.x = horizontal;
-            textMesh.position.y = -5; // middle of section
+            textMesh.position.y = -2; // middle of section
             textMesh.position.z = vertical; 
             textMesh.rotation.x = Math.PI / 2; // Rotate 90 degrees to face forward along Y-axis
             section.add(textMesh);

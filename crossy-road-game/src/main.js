@@ -3,7 +3,7 @@ import './style.css'
 import Renderer from "./components/Renderer.js";
 import Camera from "./components/Camera.js";
 import {player, position, pos} from "./components/Player.js";
-import {map, initializeMap, otherObjects} from "./components/Map.js";
+import {map, initializeMap, otherObjects, modelMixers} from "./components/Map.js";
 import { PointLight } from './components/PointLight.js';
 import { animateVehicles } from './animateVehicles.js';
 import { animatePlayer, resetPlayerState } from './animatePlayer.js';
@@ -15,8 +15,23 @@ import { tileSize } from './constants.js';
 import { ClickHandler } from './components/ClickHandler.js';
 import { DirectionalLight } from './components/DirectionalLight.js';
 import {hitVehicle} from "./utilities/hitVehicle.js";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { LoadingManager } from './utilities/LoadingManager.js';
 
-const scene = new THREE.Scene();
+// Initialize loading manager
+const loadingManager = new LoadingManager();
+
+// Global variables that need to be accessible
+let scene, camera, renderer, cameraControls, clickHandler;
+let resultDOM, scoreDOM, greetingElement;
+let ambientLight, pointLight, directionalLight;
+let clock;
+
+// Wait for loading to complete, then start the game
+window.addEventListener('loadingComplete', startGame);
+
+function startGame() {
+scene = new THREE.Scene();
 scene.add(player);
 scene.add(map);
 
@@ -41,10 +56,10 @@ loader.load([
     // './clouds1/clouds1_north.bmp',  // positive Z
     // './clouds1/clouds1_south.bmp'   // negative Z
 // lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 1); // soft white light
+ambientLight = new THREE.AmbientLight(0xffffff, 1); // soft white light
 scene.add(ambientLight);
 
-const pointLight = new PointLight(); // white light
+pointLight = new PointLight(); // white light
 scene.add(pointLight);
 
 // Add helpers to scene (not to light) for correct positioning
@@ -53,7 +68,7 @@ if (pointLight.helpers) {
     scene.add(pointLight.helpers.direction);
 }
 
-const directionalLight = DirectionalLight(); // directional light for shadows
+directionalLight = DirectionalLight(); // directional light for shadows
 scene.add(directionalLight); 
 const lightOffset = { x: 100, y: 100, z: 100 }; // Same offset as in DirectionalLight.js
 
@@ -61,19 +76,47 @@ directionalLight.target = player; // Set light target to player for dynamic shad
 scene.add(directionalLight.target);  // required to add the target to scene (even though player is already added)
 scene.add(directionalLight.helper); // Add helper to visualize light direction
 
-const camera = Camera();
-const renderer = Renderer();
+camera = Camera();
+renderer = Renderer();
 
 // Initialize camera controls
-const cameraControls = new CameraControls(camera, renderer.domElement);
+cameraControls = new CameraControls(camera, renderer.domElement);
 
 // Initialize click handler for 3D objects
-const clickHandler = new ClickHandler(camera, scene, renderer, ambientLight);
+clickHandler = new ClickHandler(camera, scene, renderer, ambientLight);
 
-const resultDOM = document.getElementById("result-container")
-const scoreDOM = document.getElementById("score");
+resultDOM = document.getElementById("result-container")
+scoreDOM = document.getElementById("score");
+greetingElement = document.querySelector("#greeting");
+
+// Clock for GLTF animations
+clock = new THREE.Clock();
 
 document.querySelector("#retry")?.addEventListener("click", initializeGame);
+document.querySelector("#greeting")?.addEventListener("click", () => {    
+    if (greetingElement) {
+        if (greetingElement.innerText === ">") {
+            greetingElement.innerHTML = "Hi! I'm Joanna,<br>Welcome to my site!";
+            greetingElement.className = "expanded";
+        } else {
+            greetingElement.innerText = ">";
+            greetingElement.className = "collapsed";
+        }
+    }
+});
+
+// Skybox toggle button event listener
+document.querySelector("#skybox-toggle")?.addEventListener("click", () => {
+    if (clickHandler) {
+        clickHandler.toggleSkybox();
+        // Update button emoji based on current skybox
+        const button = document.querySelector("#skybox-toggle");
+        const emojiSpan = button?.querySelector(".emoji-center");
+        if (emojiSpan) {
+            emojiSpan.textContent = clickHandler.currentSkybox === 'day' ? '☪︎' : '☀︎';
+        }
+    }
+});
 
 // call before rendering or else empty map
 initializeGame();
@@ -107,12 +150,21 @@ renderer.setAnimationLoop(animate);
 
 // Animation loop
 function animate() {
+    const delta = clock.getDelta();
+    
     if(resultDOM.classList.contains("hidden")){
         animateVehicles();
         animatePlayer(player, camera); // Pass camera to player animation
         if(position.currentY >= 0){
             hitVehicle();
         }
+    }
+
+    // Update GLTF model animations (all models)
+    if (modelMixers.length > 0) {
+        modelMixers.forEach(mixer => {
+            mixer.update(delta);
+        });
     }
 
     // Update directional light position to follow player
@@ -146,4 +198,8 @@ function animate() {
     
     renderer.render(scene, camera);
 }
+
+} // End of startGame function
+
+// The loading manager will now handle initialization through the start button
 
