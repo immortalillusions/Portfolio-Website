@@ -27,25 +27,32 @@ const gloader = new GLTFLoader(); // create loader
 export const metadata = new Map();
 
 export const otherObjects = new Map([
-    // [-12 * tileSize, [{
-    //     type: "forest",
-    //     trees: [
-    //         {x: -6 * tileSize, height: 70},
-    //         {x: 2 * tileSize, height: 20},
-    //         {x: 1 * tileSize, height: 50}
-    //     ],
-    //     y: -12 * tileSize
-    // }]],
+    [-12 * tileSize, [{
+        type: "forest",
+        trees: [
+            {x: -3 * tileSize, height: 70},
+            {x: 3 * tileSize, height: 20},
+            {x: 1 * tileSize, height: 50}
+        ],
+        y: -12 * tileSize
+    }]],
     
-    // [-5 * tileSize, [{
-    //     type: "forest",
-    //     trees: [
-    //         {x: -6 * tileSize, height: 70},
-    //         {x: 2 * tileSize, height: 20},
-    //         {x: 1 * tileSize, height: 50}
-    //     ],
-    //     y: -5 * tileSize
-    // }]],
+    [-5 * tileSize, [{
+        type: "forest",
+        trees: [
+            {x: 2 * tileSize, height: 40},
+            {x: 0 * tileSize, height: 20}
+        ],
+        y: -5 * tileSize
+    }]],
+    [-20 * tileSize, [{
+        type: "forest",
+        trees: [
+            {x: -2 * tileSize, height: 60},
+            {x: 1 * tileSize, height: 30}
+        ],
+        y: -20 * tileSize
+    }]],
     [-7 * tileSize, [
         {
             type: "card",
@@ -53,7 +60,7 @@ export const otherObjects = new Map([
                 x: 8 * tileSize,
                 cardWidth: 200,
                 cardHeight: 150,
-                icon: ModelIcon(gloader,'/icons/ghost_w_tophat/scene.gltf', 5, 10, Math.PI/2),
+                icon: ModelIcon(gloader,'/icons/ghost_w_tophat/scene.gltf', 15, 20, Math.PI/2),
                 url_link: "https://devpost.com/software/lil-ghost",
                 frontText: "LIL GHOST\nSmart Home\nSystem",
                 rightText: "Implemented an\nArduino\nprototype and\nwebsite that\nuses gestures\nto control\ndevices from a\ndistance,\nsuch as turning\non lights (LED)\nand adjusting\ntemperature\n(LCD) with the\nflick of a\nwrist ",
@@ -85,7 +92,7 @@ export const otherObjects = new Map([
                 x: 8 * tileSize,
                 cardWidth: 200,
                 cardHeight: 150,
-                icon: ModelIcon(gloader,'/icons/brain_hologram/scene.gltf', 5, 5, Math.PI/2, -Math.PI),
+                icon: ModelIcon(gloader,'/icons/brain_hologram/scene.gltf', 5, 5, Math.PI/2),
                 url_link: "https://www.kaggle.com/code/qwertycake/brain-tumour-classifier",
                 frontText: "BRAIN TUMOUR\nDETECTION\nRESEARCH\nUnder Head of \nAI of Western",
                 rightText: "Optimized\nconvolutional\nneural network\nin detecting\ntumours with\naccuracy of 92%\nby analyzing 3 \nhyperparameters\nusing a grid\nsearch",

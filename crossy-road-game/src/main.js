@@ -91,7 +91,7 @@ const lightOffset = { x: 100, y: 100, z: 100 }; // Same offset as in Directional
 
 directionalLight.target = player; // Set light target to player for dynamic shadows
 scene.add(directionalLight.target);  // required to add the target to scene (even though player is already added)
-scene.add(directionalLight.helper); // Add helper to visualize light direction
+// scene.add(directionalLight.helper); // Add helper to visualize light direction
 
 camera = Camera();
 renderer = Renderer();
@@ -192,9 +192,13 @@ function animate() {
     );
 
     // Toggle directional light based on player Y position (efficient method)
+    // row 0 (which is 42 units wide)
     if (position.currentY >= -20) {
         directionalLight.intensity = 1;
         directionalLight.castShadow = true;
+        if (scoreDOM && scoreDOM.innerText === "Can you find the game?"){
+            scoreDOM.innerText = "You found it!"
+        }
     } else {
         directionalLight.intensity = 0;
         directionalLight.castShadow = false;

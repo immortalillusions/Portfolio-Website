@@ -114,6 +114,7 @@ document.getElementById('right').addEventListener('touchend', (e) => {
 });
 
 // Keyboard event handlers
+// MUST QUEUE immediately on keydown (this was causing a movement lag)
 window.addEventListener('keydown', (event) => {
     switch (event.key) {
         case 'ArrowUp':
@@ -121,24 +122,28 @@ window.addEventListener('keydown', (event) => {
         case 'W':
             event.preventDefault();
             keysPressed.forward = true;
+            queueMove("forward"); // Immediate queue on keydown
             break;
         case 'ArrowDown':
         case 's':
         case 'S':
             event.preventDefault();
             keysPressed.backward = true;
+            queueMove("backward"); // Immediate queue on keydown
             break;
         case 'ArrowLeft':
         case 'a':
         case 'A':
             event.preventDefault();
             keysPressed.left = true;
+            queueMove("left"); // Immediate queue on keydown
             break;
         case 'ArrowRight':
         case 'd':
         case 'D':
             event.preventDefault();
             keysPressed.right = true;
+            queueMove("right"); // Immediate queue on keydown
             break;
     }
 });

@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { setShadowsRecursively } from '../constants';
 
 export function ModelIcon(gloader, path, baseHeight, scale = 10, rx = 0, ry = 0, rz = 0) {
@@ -41,6 +40,7 @@ export function ModelIcon(gloader, path, baseHeight, scale = 10, rx = 0, ry = 0,
             
             // Store reference to the actual model for easy access
             modelGroup.userData.model = model;
+            
         },
         // Progress callback
         function(progress) {
