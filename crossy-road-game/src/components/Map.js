@@ -92,7 +92,7 @@ export const otherObjects = new Map([
                 icon: ModelIcon(gloader,'/icons/coins_and_money/scene.gltf', 15, 20, Math.PI/2, Math.PI),
                 url_link: "https://www.altas.com/",
                 frontText: "Altas Partners\n($10B Private\nEquity Fund)",
-                rightText: "Analyze multi\nbillion-dollar\ncompanies,\nattend board\nmeetings, &\ncommunicate\nwith management\nas an investor\n\nUse Selenium to\nautomate\nextracting 10K+\ndata points\nand LLM models\nto add insights",
+                rightText: "Analyzed multi\nbillion-dollar\ncompanies,\nattend board\nmeetings, &\ncommunicate\nwith management\nas an investor\n\nUsed Selenium to\nautomate\nextracting 10K+\ndata points\nand LLM models\nto add insights",
                 bottomLeftText: "Private Equity\nAnd Data\nAnalyst Intern",
                 rotation: [0,0, Math.PI/2]
             },
