@@ -11,6 +11,7 @@ import { CameraControls } from './components/CameraControls.js';
 import './collectUserInput.js'; 
 import { setCameraTarget } from "./components/Camera.js";
 import { animatePokeball } from './components/Pokeball.js';
+import { animateModelIcon } from './components/ModelIcon.js';
 import { tileSize } from './constants.js';
 import { ClickHandler } from './components/ClickHandler.js';
 import { DirectionalLight } from './components/DirectionalLight.js';
@@ -29,6 +30,22 @@ let clock;
 
 // Wait for loading to complete, then start the game
 window.addEventListener('loadingComplete', startGame);
+
+// Cleanup function to prevent memory leaks
+function cleanup() {
+    if (renderer) {
+        renderer.setAnimationLoop(null);
+        renderer.dispose();
+    }
+    if (scene) {
+        scene.clear();
+    }
+}
+
+// Handle page unload to cleanup WebGL context
+window.addEventListener('beforeunload', cleanup);
+
+// startGame();
 
 function startGame() {
 scene = new THREE.Scene();
@@ -63,10 +80,10 @@ pointLight = new PointLight(); // white light
 scene.add(pointLight);
 
 // Add helpers to scene (not to light) for correct positioning
-if (pointLight.helpers) {
-    scene.add(pointLight.helpers.shadowCamera);
-    scene.add(pointLight.helpers.direction);
-}
+// if (pointLight.helpers) {
+//     scene.add(pointLight.helpers.shadowCamera);
+//     scene.add(pointLight.helpers.direction);
+// }
 
 directionalLight = DirectionalLight(); // directional light for shadows
 scene.add(directionalLight); 
@@ -183,11 +200,20 @@ function animate() {
         directionalLight.castShadow = false;
     }
 
-    // Animate Pokeballs in cards
+    // Animate Pokeballs and Model Icons in cards
     for (const [y, objectsAtY] of otherObjects) {
         for (const row of objectsAtY) {
             if (row.type === "card" && row.card.icon) {
-                animatePokeball(row.card.icon);
+                // Check if it's a pokeball or model icon
+                if (row.card.icon.userData && row.card.icon.userData.bobSpeed) {
+                    if (row.card.icon.userData.isLoaded !== undefined) {
+                        // It's a model icon
+                        animateModelIcon(row.card.icon);
+                    } else {
+                        // It's a pokeball
+                        animatePokeball(row.card.icon);
+                    }
+                }
             }
         }
     }

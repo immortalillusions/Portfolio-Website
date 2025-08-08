@@ -5,7 +5,7 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import {Sign} from "./Sign"
 
-export function Card(x, y, cardWidth, cardHeight, icon, rightText, bottomLeftText, rotation = [0,0,0]) {
+export function Card(x, y, cardWidth, cardHeight, icon, url_link, frontText, rightText, bottomLeftText, rotation = [0,0,0]) {
     const card = new THREE.Group();
     card.position.x = x;
     card.position.y = y;
@@ -100,9 +100,9 @@ export function Card(x, y, cardWidth, cardHeight, icon, rightText, bottomLeftTex
     card.add(bottomLeftSection);
 
     // Add text placeholders to sections
-    addText(bottomLeftText, bottomLeftSection, 0);
+    addText(bottomLeftText, bottomLeftSection, 20);
     addText(rightText, rightSection, 50);
-    addIcon(icon, topLeftSection);
+    addIcon(icon, topLeftSection, url_link);
 
     // Store metadata for text content
     card.userData = {
@@ -125,7 +125,7 @@ export function Card(x, y, cardWidth, cardHeight, icon, rightText, bottomLeftTex
     // bottomLeftSection.userData = { clickable: true, url: card.userData.url };
 
     card.rotation.set(rotation[0], rotation[1], rotation[2]);
-    const sign = Sign(cardWidth / 4, cardHeight/2 - cardThickness, cardWidth / 2, 60, "POKIGUESS\nPan down for\nmore details!", 0x6a5acd, 5, -40, null, false)
+    const sign = Sign(cardWidth / 4, cardHeight/2 - cardThickness, cardWidth / 2, 60, frontText, 0x6a5acd, 10, -40, null, false)
     card.add(sign)
     setShadowsRecursively(card, true, true);
     return card;
@@ -161,12 +161,12 @@ export function addText(text, section, yOffset = 0, xOffset = -40) {
 }
 
 // add floating icon
-function addIcon(icon, section){
+function addIcon(icon, section, url_link){
     // Only make icon clickable with URL
     icon.userData = { 
         ...icon.userData, // Preserve existing userData (like animation properties)
         clickable: true, 
-        url: 'https://your-portfolio-link.com' // Put your actual portfolio URL here
+        url: url_link // Put your actual portfolio URL here
     };
     section.add(icon);
 }

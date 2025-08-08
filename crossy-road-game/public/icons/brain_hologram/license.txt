@@ -1,0 +1,11 @@
+Model Information:
+* title:	Brain in a Jar
+* source:	https://sketchfab.com/3d-models/brain-in-a-jar-6f6f748d02544a779a999d7cc9b0f6a6
+* author:	Citron Vert (https://sketchfab.com/citron.vert)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Brain in a Jar" (https://sketchfab.com/3d-models/brain-in-a-jar-6f6f748d02544a779a999d7cc9b0f6a6) by Citron Vert (https://sketchfab.com/citron.vert) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

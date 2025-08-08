@@ -1,0 +1,11 @@
+Model Information:
+* title:	Coins And Money
+* source:	https://sketchfab.com/3d-models/coins-and-money-828af77066764effb5ad3eca6ac7c50d
+* author:	SundayLazy (https://sketchfab.com/Priadjie25)
+
+Model License:
+* license type:	CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)
+* requirements:	Author must be credited. Modified versions must have the same license. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Coins And Money" (https://sketchfab.com/3d-models/coins-and-money-828af77066764effb5ad3eca6ac7c50d) by SundayLazy (https://sketchfab.com/Priadjie25) licensed under CC-BY-SA-4.0 (http://creativecommons.org/licenses/by-sa/4.0/)

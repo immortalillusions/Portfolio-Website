@@ -26,7 +26,7 @@ function generateForestLaneMetadata() {
     const trees = [];
     const occupiedTiles = new Set();
     // 110 tiles wide so generate max 20 trees
-    const treeCount = Math.floor(Math.random() * 5) + 1; // 1 to 6 trees
+    const treeCount = Math.floor(Math.random() * 2) + 1; // 1 to 3 trees
     for (let i = 0; i < treeCount; i++) {
         let x;
         do {

@@ -10,8 +10,11 @@ import { tileSize, bottomMap, grassBehindPlayer } from '../constants.js';
 import { Pokeball } from './Pokeball.js';
 import { generateRows } from '../utilities/generateRows.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
+import { ModelIcon } from './ModelIcon.js';
 const gloader = new GLTFLoader(); // create loader
+
+// load the icons
+
 
 // initial metadata: need to add cards / initial items to a metadata
 // also because we need to calculate hit bounds
@@ -24,74 +27,123 @@ const gloader = new GLTFLoader(); // create loader
 export const metadata = new Map();
 
 export const otherObjects = new Map([
-    [-30 * tileSize, [{
-        type: "truck",
-        direction: true,
-        speed: 50,
-        vehicles: [{initialX: -3 * tileSize, color: 0xff0000}],
-        y: -30 * tileSize
-    }]],
+    // [-12 * tileSize, [{
+    //     type: "forest",
+    //     trees: [
+    //         {x: -6 * tileSize, height: 70},
+    //         {x: 2 * tileSize, height: 20},
+    //         {x: 1 * tileSize, height: 50}
+    //     ],
+    //     y: -12 * tileSize
+    // }]],
     
-    [-32 * tileSize, [{
-        type: "forest",
-        trees: [
-            {x: -6 * tileSize, height: 70},
-            {x: 2 * tileSize, height: 20},
-            {x: 1 * tileSize, height: 50}
-        ],
-        y: -32 * tileSize
-    }]],
-    
-    [-5 * tileSize, [{
-        type: "forest",
-        trees: [
-            {x: -6 * tileSize, height: 70},
-            {x: 2 * tileSize, height: 20},
-            {x: 1 * tileSize, height: 50}
-        ],
-        y: -5 * tileSize
-    }]],
-    
-    [-11 * tileSize, [{
-        type: "car",
-        // true: move right, false: move left
-        direction: false,
-        speed: 80,
-        vehicles: [{initialX: -1 * tileSize, color: 0xff0000}],
-        y: -11 * tileSize
-    }]],
-    
-    [-3 * tileSize, [{
-        type: "car",
-        // true: move right, false: move left
-        direction: false,
-        speed: 80,
-        vehicles: [{initialX: -1 * tileSize, color: 0xff0000}],
-        y: -3 * tileSize
-    }]],
-    
-    [-4 * tileSize, [{
-        type: "truck",
-        direction: true,
-        speed: 100,
-        vehicles: [{initialX: -4 * tileSize, color: 0x00ff00}],
-        y: -4 * tileSize
-    }]],
-    
-    [-41 * tileSize, [{
-        type: "card",
-        card: {
-            x: 15 * tileSize,
-            cardWidth: 200,
-            cardHeight: 150,
-            icon: Pokeball(),
-            rightText: "Guess and catch\nPokemon!\nMade with\nPokeAPI",
-            bottomLeftText: "PokiGuess\n2020-2023\nFull-time",
-            rotation: [0,0, -Math.PI/2]
+    // [-5 * tileSize, [{
+    //     type: "forest",
+    //     trees: [
+    //         {x: -6 * tileSize, height: 70},
+    //         {x: 2 * tileSize, height: 20},
+    //         {x: 1 * tileSize, height: 50}
+    //     ],
+    //     y: -5 * tileSize
+    // }]],
+    [-7 * tileSize, [
+        {
+            type: "card",
+            card: {
+                x: 8 * tileSize,
+                cardWidth: 200,
+                cardHeight: 150,
+                icon: ModelIcon(gloader,'/icons/ghost_w_tophat/scene.gltf', 5, 10, Math.PI/2),
+                url_link: "https://devpost.com/software/lil-ghost",
+                frontText: "LIL GHOST\nSmart Home\nSystem",
+                rightText: "Implemented an\nArduino\nprototype and\nwebsite that\nuses gestures\nto control\ndevices from a\ndistance,\nsuch as turning\non lights (LED)\nand adjusting\ntemperature\n(LCD) with the\nflick of a\nwrist ",
+                bottomLeftText: "Arduino\nESP32\nIMU\nRedis\nReact.js\nC++",
+                rotation: [0,0, -Math.PI/2]
+            },
+            y: -7 * tileSize
         },
-        y: -41 * tileSize
-    }]],
-    [-42 * tileSize, [{
+        {
+            type: "card",
+            card: {
+                x: -8 * tileSize,
+                cardWidth: 200,
+                cardHeight: 150,
+                icon: ModelIcon(gloader,'/icons/coins_and_money/scene.gltf', 15, 20, Math.PI/2, Math.PI),
+                url_link: "https://www.altas.com/",
+                frontText: "Altas Partners\n($10B Private\nEquity Fund)",
+                rightText: "Analyze multi\nbillion-dollar\ncompanies,\nattend board\nmeetings, &\ncommunicate\nwith management\nas an investor\n\nUse Selenium to\nautomate\nextracting 10K+\ndata points\nand LLM models\nto add insights",
+                bottomLeftText: "Private Equity\nAnd Data\nAnalyst Intern",
+                rotation: [0,0, Math.PI/2]
+            },
+            y: -7 * tileSize
+        }
+    ]],    
+    [-14 * tileSize, [
+        {
+            type: "card",
+            card: {
+                x: 8 * tileSize,
+                cardWidth: 200,
+                cardHeight: 150,
+                icon: ModelIcon(gloader,'/icons/brain_hologram/scene.gltf', 5, 5, Math.PI/2, -Math.PI),
+                url_link: "https://www.kaggle.com/code/qwertycake/brain-tumour-classifier",
+                frontText: "BRAIN TUMOUR\nDETECTION\nRESEARCH\nUnder Head of \nAI of Western",
+                rightText: "Optimized\nconvolutional\nneural network\nin detecting\ntumours with\naccuracy of 92%\nby analyzing 3 \nhyperparameters\nusing a grid\nsearch",
+                bottomLeftText: "PyTorch\nTensorFlow\nPandas\nKaggle",
+                rotation: [0,0, -Math.PI/2]
+            },
+            y: -14 * tileSize
+        },
+        {
+            type: "card",
+            card: {
+                x: -8 * tileSize,
+                cardWidth: 200,
+                cardHeight: 150,
+                icon: ModelIcon(gloader,'/icons/robot/scene.gltf', 30, 100, Math.PI/2, Math.PI),
+                url_link: "https://devfortress.com/",
+                frontText: "DevFortress",
+                rightText: "Automated asset\ngeneration\nfor Google Meet\nextension\nwith 600K+\nusers using\nGemini &\nNode.js,\nsaving 90% time ",
+                bottomLeftText: "Backend\nSoftware\nEngineer\Intern",
+                rotation: [0,0, Math.PI/2]
+            },
+            y: -14 * tileSize
+        }
+    ]],
+
+    [-21 * tileSize, [
+        {
+            type: "card",
+            card: {
+                x: 8 * tileSize,
+                cardWidth: 200,
+                cardHeight: 150,
+                icon: Pokeball(),
+                url_link: "https://pokiguess.vercel.app/login",
+                frontText: "POKIGUESS\nGuess and catch\nPokemon!",
+                rightText: "Built a\nguessing game\nwhere users\nidentify\nsilhouettes\nto catch\nPokemon,\nfeaturing fun\nfacts and\nofficial\nin-game sounds",
+                bottomLeftText: "Next.js\nHTML\nTailwind CSS\nFramer Motion\nPostgreSQL",
+                rotation: [0,0, -Math.PI/2]
+            },
+            y: -21 * tileSize
+        },
+        {
+            type: "card",
+            card: {
+                x: -8 * tileSize,
+                cardWidth: 200,
+                cardHeight: 150,
+                icon: ModelIcon(gloader,'/icons/graph/scene.gltf', 15, 10, Math.PI/2, Math.PI),
+                url_link: "https://www.cppinvestments.com/",
+                frontText: "Canadian\nPension Plan\nInvestment\nBoard\n($632B Fund)",
+                rightText: "Developed\nanalytics\npipelines to\noptimize\nportfolio\nconstruction\n\nAutomated 150+\nrisk analytics\nusing Pandas\nand Matplotlib",
+                bottomLeftText: "Quantitative\nDeveloper\nIntern\n(Portfolio\nDesign and\nConstruction)",
+                rotation: [0,0, Math.PI/2]
+            },
+            y: -21 * tileSize
+        }
+    ]],
+    [-22 * tileSize, [{
         type: "sign",
         sign: {
             x: 1 * tileSize,
@@ -102,9 +154,9 @@ export const otherObjects = new Map([
             vertical: 10,
             horizontal: -60,
         },
-        y: -42 * tileSize
+        y: -22 * tileSize
     }]],
-    [-30 * tileSize, [{
+    [-10 * tileSize, [{
         type: "sign",
         sign: {
             x: -1 * tileSize,
@@ -116,9 +168,9 @@ export const otherObjects = new Map([
             horizontal: -22,
             toggleSkybox: true
         },
-        y: -30 * tileSize
+        y: -10 * tileSize
     }]],
-    [-43*tileSize, [{
+    [-23*tileSize, [{
         type: "model",
         path: '/models/Regigigas.gltf',
         x: -70, 
@@ -130,7 +182,7 @@ export const otherObjects = new Map([
         // width, height useful for checking for bounds
         width: 50,
         height: 50,
-        y: -43*tileSize
+        y: -23*tileSize
     }]]    
 
 ]);
@@ -188,11 +240,12 @@ export function initializeMap(){
     addText("Nice! Now you can\nmove your camera.\nUse WASD/buttons to explore!"+
         "\n<- Experiences"+
         "\n-> Projects"+
-        "\nOr go forward to find\nthe hidden game!", map, -43.5*tileSize)
+        "\nOr go forward to find\nthe hidden game!", map, -23.5*tileSize)
 
-    addText("<---------\nExperiences", map, -44*tileSize, -200)
-    addText("--------->\nProjects", map, -44*tileSize, 200)
+    addText("<---------\nExperiences\nClick the icons\nfor more info!", map, -24*tileSize, -150)
+    addText("--------->\nProjects\nClick the icons\nfor more info!", map, -24*tileSize, 150)
 }
+
 
 function loadModel(loader, path, x, y, z, rx, ry, rz, scale){
     // Load a glTF resource
@@ -218,11 +271,11 @@ function loadModel(loader, path, x, y, z, rx, ry, rz, scale){
         const light = new THREE.PointLight(0xffffff, 7500, 2000);         
         light.position.set(x, y, z + 70); // World position: above the model in Z
         
-        const helper = new THREE.PointLightHelper(light, 50, 0xff0000); // Red helper for visibility
+        // const helper = new THREE.PointLightHelper(light, 50, 0xff0000); // Red helper for visibility
         
         // Add to the map (scene) instead of the model (bc when i scale model, that messes with the coordinates for its children too)
         map.add(light);
-        map.add(helper);
+        // map.add(helper);
 
         map.add( gltf.scene );
         models.push(ref);
@@ -236,7 +289,7 @@ export function populateRows(data) {
         for (const object of objectsAtY) {
             const y = object.y
             if (object.type === "card") {
-                const card = Card(object.card.x, y, object.card.cardWidth, object.card.cardHeight, object.card.icon, object.card.rightText, object.card.bottomLeftText, object.card.rotation);
+                const card = Card(object.card.x, y, object.card.cardWidth, object.card.cardHeight, object.card.icon, object.card.url_link, object.card.frontText, object.card.rightText, object.card.bottomLeftText, object.card.rotation);
                 map.add(card);
                 object.ref = card;
             }

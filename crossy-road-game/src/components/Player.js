@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { tileSize } from '../constants.js';
 import { endsUpInValidPosition } from '../utilities/endsUpInValidPosition.js';
 
-export const pos = [0,-45];
+export const pos = [0,-26];
 
 export const player = Player();
 
