@@ -27,14 +27,13 @@ const gloader = new GLTFLoader(); // create loader
 export const metadata = new Map();
 
 export const otherObjects = new Map([
-    [-12 * tileSize, [{
+    [-11 * tileSize, [{
         type: "forest",
         trees: [
             {x: -3 * tileSize, height: 70},
             {x: 3 * tileSize, height: 20},
-            {x: 1 * tileSize, height: 50}
         ],
-        y: -12 * tileSize
+        y: -11 * tileSize
     }]],
     
     [-5 * tileSize, [{
@@ -52,6 +51,21 @@ export const otherObjects = new Map([
             {x: 1 * tileSize, height: 30}
         ],
         y: -20 * tileSize
+    }]],
+    [-13*tileSize, [{
+        type: "model",
+        path: '/models/Rayquaza/scene.gltf',
+        x: -3*tileSize, 
+        z: 0,
+        rx: Math.PI/2,
+        ry: Math.PI/4,
+        rz: 0,
+        scale: 20,
+        animationIndex: 0, 
+        // width, height useful for checking for bounds
+        width: 50,
+        height: 50,
+        y: -13*tileSize
     }]],
     [-7 * tileSize, [
         {
@@ -176,6 +190,36 @@ export const otherObjects = new Map([
             toggleSkybox: true
         },
         y: -10 * tileSize
+    },
+    {
+        type: "model",
+        path: '/models/roblox/Roblox.gltf',
+        x: 70, 
+        z: 0,
+        rx: Math.PI/2,
+        ry: -Math.PI/4,
+        rz: 0,
+        scale: 50,
+        animationIndex: 14, // there's 16 animations in total
+        // width, height useful for checking for bounds
+        width: 50,
+        height: 50,
+        y: -10*tileSize
+    },
+    {
+        type: "model",
+        path: '/models/roblox/Roblox.gltf',
+        x: 20, 
+        z: 0,
+        rx: Math.PI/2,
+        ry: Math.PI/4,
+        rz: 0,
+        scale: 50,
+        animationIndex: 13, // there's 16 animations in total
+        // width, height useful for checking for bounds
+        width: 50,
+        height: 50,
+        y: -10*tileSize
     }]],
     [-23*tileSize, [{
         type: "model",
@@ -186,11 +230,27 @@ export const otherObjects = new Map([
         ry: Math.PI,
         rz: 0,
         scale: 10,
+        animationIndex: 0, 
         // width, height useful for checking for bounds
         width: 50,
         height: 50,
         y: -23*tileSize
-    }]]    
+    },
+    {
+        type: "model",
+        path: '/models/roblox/Roblox.gltf',
+        x: 130, 
+        z: 0,
+        rx: Math.PI/2,
+        ry: -Math.PI/4,
+        rz: 0,
+        scale: 50,
+        animationIndex: 15, // there's 16 animations in total
+        // width, height useful for checking for bounds
+        width: 50,
+        height: 50,
+        y: -23*tileSize
+        }]]    
 
 ]);
 
@@ -254,7 +314,7 @@ export function initializeMap(){
 }
 
 
-function loadModel(loader, path, x, y, z, rx, ry, rz, scale){
+function loadModel(loader, path, x, y, z, rx, ry, rz, scale, animationIndex = 0){
     // Load a glTF resource
     // happens asynchronously so can't edit position outside of this function
     loader.load(
@@ -266,7 +326,11 @@ function loadModel(loader, path, x, y, z, rx, ry, rz, scale){
         const animation = gltf.animations;
         const mixer = new THREE.AnimationMixer(gltf.scene);
         modelMixers.push(mixer); // Add to mixers array
-        const action = mixer.clipAction(animation[0]); // play the first animation
+        
+        // Use specified animation index, or default to 0 if out of bounds
+        const selectedAnimationIndex = Math.min(animationIndex, animation.length - 1);
+        const action = mixer.clipAction(animation[selectedAnimationIndex]); // play the specified animation
+        
         ref.position.set(x, y, z); // set position
         ref.scale.set(scale, scale, scale); // Scale the model up
         ref.rotation.x = rx; 
@@ -305,7 +369,7 @@ export function populateRows(data) {
                 map.add(sign);
                 object.ref = sign;
             } else if (object.type === "model") {
-                loadModel(gloader, object.path, object.x, object.y, object.z, object.rx, object.ry, object.rz, object.scale);
+                loadModel(gloader, object.path, object.x, object.y, object.z, object.rx, object.ry, object.rz, object.scale, object.animationIndex || 0);
             }
 
             // first row of the metadata is the second row, after the starting row (which is not included in the metadata)
