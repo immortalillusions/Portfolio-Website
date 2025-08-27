@@ -32,6 +32,67 @@ function Player() {
     cap.castShadow = true;
     cap.receiveShadow = true;
     player.add(cap);
+    
+    // Add black round eyes
+    const leftEye = new THREE.Mesh(
+        new THREE.SphereGeometry(1.5, 8, 8), // radius, widthSegments, heightSegments
+        new THREE.MeshLambertMaterial({
+            color: "black",
+            flatShading: true
+        })
+    );
+    leftEye.position.set(-3, 7, 16); // left side, forward, on the body
+    leftEye.castShadow = true;
+    player.add(leftEye);
+    
+    const rightEye = new THREE.Mesh(
+        new THREE.SphereGeometry(1.5, 8, 8),
+        new THREE.MeshLambertMaterial({
+            color: "black",
+            flatShading: true
+        })
+    );
+    rightEye.position.set(3, 7, 16); // right side, forward, on the body
+    rightEye.castShadow = true;
+    player.add(rightEye);
+    
+    // Add curved mouth - single arc forming a smile
+    const mouthMaterial = new THREE.MeshLambertMaterial({
+        color: "black",
+        flatShading: true
+    });
+    
+    const mouth = new THREE.Mesh(
+        new THREE.TorusGeometry(2, 0.3, 8, 16, Math.PI), // radius, tube, radialSegments, tubularSegments, arc
+        mouthMaterial
+    );
+    mouth.position.set(0, 7.5, 12); // centered, forward, on the body
+    mouth.rotation.x = -Math.PI/2; // Flip upside down to make it a smile
+    mouth.castShadow = true;
+    player.add(mouth);
+    
+    // Add dragon spikes along the back
+    const spikeGeometry = new THREE.ConeGeometry(2, 4, 3); // radius, height, radialSegments (3 = triangle)
+    const spikeMaterial = new THREE.MeshLambertMaterial({
+        color: "black",
+        flatShading: true
+    });
+    
+    // Create multiple spikes along the back
+    const spikes = [
+        { x: 0, y: -9, z: 16 }, // center back, top
+        { x: 0, y: -9, z: 11 }, // center back, middle
+        { x: 0, y: -9, z: 6 }, // center back, lower
+    ];
+    
+    spikes.forEach(pos => {
+        const spike = new THREE.Mesh(spikeGeometry, spikeMaterial);
+        spike.position.set(pos.x, pos.y, pos.z);
+        spike.rotation.x = Math.PI; // Point downward
+        spike.castShadow = true;
+        player.add(spike);
+    });
+    
     player.position.x = pos[0] * tileSize; 
     player.position.y = pos[1] * tileSize;
     return player;

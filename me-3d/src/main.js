@@ -189,13 +189,12 @@ function animate() {
     // row 0 (which is 42 units wide)
     if (position.currentY >= -20) {
         directionalLight.intensity = 1;
-        directionalLight.castShadow = true;
         if (scoreDOM && scoreDOM.innerText === "Can you find the game?"){
             scoreDOM.innerText = "You found it!"
         }
     } else {
-        directionalLight.intensity = 0;
-        directionalLight.castShadow = false;
+        directionalLight.intensity = 0.01; // Keep very low instead of 0
+        // this is to prevent lag, since if i turn it ON suddenly, it'll have to calculate all the shadows (= lag)
     }
 
     // Animate Pokeballs and Model Icons in cards

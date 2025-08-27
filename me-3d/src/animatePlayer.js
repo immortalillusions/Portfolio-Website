@@ -106,9 +106,9 @@ function setRotation(progress, player, camera){
     let endRotation = cameraRotation;
     
     if (movesQueue[0] === "left") {
-        endRotation = cameraRotation - Math.PI / 2; // rotate left relative to camera
+        endRotation = cameraRotation + Math.PI / 2; // rotate left relative to camera
     } else if (movesQueue[0] === "right") {
-        endRotation = cameraRotation + Math.PI / 2; // rotate right relative to camera
+        endRotation = cameraRotation - Math.PI / 2; // rotate right relative to camera
     } else if (movesQueue[0] === "backward") {
         endRotation = cameraRotation + Math.PI; // rotate 180 degrees relative to camera
     } else if (movesQueue[0] === "forward") {
