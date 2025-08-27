@@ -1,8 +1,14 @@
 @import url("https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap");
+@import "tailwindcss";
 
 body {
   margin: 0;
   display: flex;
+}
+
+/* Prevent flash of unstyled content */
+.initialHide {
+  display: none;
 }
 
 /* Enhanced Greeting Button Styles */
@@ -63,7 +69,7 @@ body {
   animation: none ;
 }
 
-/* Skybox Toggle Button - same style as collapsed greeting */
+/* Skybox Toggle Button */
 #skybox-toggle {
   font-family: 'Press Start 2P', monospace ;
   font-size: 1.5rem ;
@@ -110,11 +116,6 @@ body {
   100% { 
     box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.8), 0 0 20px rgba(74,144,226,0.8) ;
   }
-}
-
-/* Expanded greeting button animation */
-#greeting.expanded {
-  animation: slideIn 0.3s ease-out ;
 }
 
 @keyframes slideIn {

@@ -113,7 +113,7 @@ document.querySelector("#retry")?.addEventListener("click", initializeGame);
 document.querySelector("#greeting")?.addEventListener("click", () => {    
     if (greetingElement) {
         if (greetingElement.innerText === ">") {
-            greetingElement.innerHTML = "Hi! I'm Joanna,<br>Welcome to my site!";
+            greetingElement.innerHTML = "Hi! I'm Joanna,<br>Welcome to my site!<br><br>Credits: Hunor Márton Borbély (Idea), Sketchfab (Models), Unity (Skybox)";
             greetingElement.className = "expanded";
         } else {
             greetingElement.innerText = ">";
@@ -126,12 +126,6 @@ document.querySelector("#greeting")?.addEventListener("click", () => {
 document.querySelector("#skybox-toggle")?.addEventListener("click", () => {
     if (clickHandler) {
         clickHandler.toggleSkybox();
-        // Update button emoji based on current skybox
-        const button = document.querySelector("#skybox-toggle");
-        const emojiSpan = button?.querySelector(".emoji-center");
-        if (emojiSpan) {
-            emojiSpan.textContent = clickHandler.currentSkybox === 'day' ? '☪︎' : '☀︎';
-        }
     }
 });
 

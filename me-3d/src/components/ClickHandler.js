@@ -222,6 +222,12 @@ export class ClickHandler {
             this.ambientLight.intensity = 0.25; 
         }
         this.changeSkybox(nextSkybox);
+        // Update button emoji based on current skybox
+        const button = document.querySelector("#skybox-toggle");
+        const emojiSpan = button?.querySelector(".emoji-center");
+        if (emojiSpan) {
+            emojiSpan.textContent = this.currentSkybox === 'day' ? '☾' : '☀︎';
+        }
     }
 
     getClickableUrl(object) {

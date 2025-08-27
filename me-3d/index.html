@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="/Day_Top.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JL</title>
-    <script src="https://cdn.tailwindcss.com"></script> <!-- Tailwind CSS for styling -->
+    <link href="/src/style.css" rel="stylesheet">
   </head>
   <body>
     <!-- Loading Screen -->
@@ -22,7 +22,7 @@
         </div>
         
         <!-- Loading Elements (hidden initially) -->
-        <div id="loading-elements" class="hidden flex flex-col items-center justify-center">
+        <div id="loading-elements" class="flex flex-col items-center justify-center initialHide">
           <div class="loading-spinner mb-4">
             <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-black border-t-transparent"></div>
           </div>

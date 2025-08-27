@@ -56,7 +56,7 @@ export class LoadingManager {
             this.startButtonContainer.classList.add('hidden');
         }
         if (this.loadingElements) {
-            this.loadingElements.classList.remove('hidden');
+            this.loadingElements.classList.remove("initialHide")
         }
         
         this.updateProgress(0, 'Initializing...');
