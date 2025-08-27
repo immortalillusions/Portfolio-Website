@@ -40,7 +40,7 @@ export function updateCameraPosition(camera) {
 }
 
 // Function to set camera target (player position) with smooth interpolation
-export function setCameraTarget(camera, x, y, z = 0, smoothing = 0.05) {
+export function setCameraTarget(camera, x, y, z = 0, smoothing = 0.15) {
     const target = camera.userData.target;
     
     // Smoothly interpolate to new target position

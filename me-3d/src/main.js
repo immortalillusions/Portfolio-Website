@@ -27,6 +27,7 @@ let scene, camera, renderer, cameraControls, clickHandler;
 let resultDOM, scoreDOM, greetingElement;
 let ambientLight, pointLight, directionalLight;
 let clock;
+let backgroundMusic; // Add audio variable
 
 // Wait for loading to complete, then start the game
 window.addEventListener('loadingComplete', startGame);
@@ -109,11 +110,15 @@ greetingElement = document.querySelector("#greeting");
 // Clock for GLTF animations
 clock = new THREE.Clock();
 
+// Initialize background music
+backgroundMusic = new Audio('./music.mp3');
+backgroundMusic.loop = true; // Enable looping
+
 document.querySelector("#retry")?.addEventListener("click", initializeGame);
 document.querySelector("#greeting")?.addEventListener("click", () => {    
     if (greetingElement) {
         if (greetingElement.innerText === ">") {
-            greetingElement.innerHTML = "Hi! I'm Joanna,<br>Welcome to my site!<br><br>Credits: Hunor Márton Borbély (Idea), Sketchfab (Models), Unity (Skybox)";
+            greetingElement.innerHTML = "Hi! I'm Joanna,<br>Welcome to my site!<br><br>Credits: Hunor Márton Borbély (Idea), Sketchfab (Models), Unity (Skybox), Suno (Music)";
             greetingElement.className = "expanded";
         } else {
             greetingElement.innerText = ">";
@@ -126,6 +131,27 @@ document.querySelector("#greeting")?.addEventListener("click", () => {
 document.querySelector("#skybox-toggle")?.addEventListener("click", () => {
     if (clickHandler) {
         clickHandler.toggleSkybox();
+    }
+});
+
+// Audio toggle button event listener
+document.querySelector("#audio-toggle")?.addEventListener("click", () => {
+    const button = document.querySelector("#audio-toggle");
+    const emojiSpan = button?.querySelector(".emoji-center");
+    
+    if (emojiSpan && backgroundMusic) {
+        if (emojiSpan.textContent === '⦸') {
+            // Mute/pause the music
+            backgroundMusic.pause();
+            emojiSpan.textContent = '♪'; // Muted
+        } else {
+            // Play/unmute the music
+            backgroundMusic.play().catch(error => {
+                console.error('Error playing audio:', error);
+                // Some browsers require user interaction before playing audio
+            });
+            emojiSpan.textContent = '⦸'; // Playing
+        }
     }
 });
 
