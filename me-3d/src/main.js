@@ -243,7 +243,7 @@ function animate() {
     
     // Update camera to follow player with improved smoothing
     // Use a slightly higher value for more responsive but still smooth following
-    setCameraTarget(camera, position.currentX, position.currentY, 0, 0.06);
+    setCameraTarget(camera, position.currentX, position.currentY, 0, 0.12);
     
     renderer.render(scene, camera);
 }
