@@ -127,6 +127,9 @@ export class LoadingManager {
     completeLoading() {
         this.isComplete = true;
         
+        // Dispatch an assetsReady event so the app can render its first frame while the loading UI is still visible
+        window.dispatchEvent(new CustomEvent('assetsReady'));
+        
         // Fade out loading screen
         if (this.loadingScreen) {
             this.loadingScreen.style.transition = 'opacity 0.5s ease-out';
@@ -134,10 +137,11 @@ export class LoadingManager {
             
             setTimeout(() => {
                 this.loadingScreen.style.display = 'none';
-                
                 // Dispatch custom event to let main.js know loading is complete
                 window.dispatchEvent(new CustomEvent('loadingComplete'));
             }, 500);
+        } else {
+            window.dispatchEvent(new CustomEvent('loadingComplete'));
         }
     }
     

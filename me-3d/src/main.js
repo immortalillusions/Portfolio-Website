@@ -28,9 +28,7 @@ let resultDOM, scoreDOM, greetingElement;
 let ambientLight, pointLight, directionalLight;
 let clock;
 let backgroundMusic; // Add audio variable
-
-// Wait for loading to complete, then start the game
-window.addEventListener('loadingComplete', startGame);
+let lightOffset = { x: 100, y: 100, z: 100 }; // moved to module scope so animate() can use it
 
 // Cleanup function to prevent memory leaks
 function cleanup() {
@@ -46,7 +44,49 @@ function cleanup() {
 // Handle page unload to cleanup WebGL context
 window.addEventListener('beforeunload', cleanup);
 
-// startGame();
+// hide canvas until loading finished
+const gameCanvas = document.querySelector('canvas.game');
+if (gameCanvas) gameCanvas.style.display = 'none';
+
+// Helper to show game when ready
+function revealGame() {
+  const loadingScreen = document.getElementById('loading-screen');
+  if (loadingScreen) loadingScreen.style.display = 'none';
+  if (gameCanvas) gameCanvas.style.display = 'block';
+}
+
+// Listen for loading manager event
+window.addEventListener('assetsReady', async () => {
+  // Start the game (creates scene, camera, renderer, lights, map, etc.)
+  // startGame is hoisted so it's safe to call here
+  startGame();
+
+  // Compile shaders and programs while the loading UI is still visible. Keeps heavy shader compilation behind the loading screen.
+  try {
+    if (renderer) {
+      try {
+        renderer.compile(scene, camera);
+      } catch (e) {
+        console.warn('Renderer.compile failed or is expensive:', e);
+      }
+    }
+  } catch (e) {
+    console.warn('Prewarm compile step failed:', e);
+  }
+
+  // Render one stabilizing frame (startGame initializes renderer and camera)
+  try {
+    renderer.render(scene, camera);
+  } catch (e) {
+    console.warn('Stabilizing render failed (renderer or scene may not be ready yet):', e);
+  }
+
+  // Reveal the loading screen -> hide it and show the canvas
+  revealGame();
+
+  // Start the animation loop once (ensure this is only called here)
+  renderer.setAnimationLoop(animate);
+});
 
 function startGame() {
 scene = new THREE.Scene();
@@ -88,14 +128,15 @@ scene.add(pointLight);
 
 directionalLight = DirectionalLight(); // directional light for shadows
 scene.add(directionalLight); 
-const lightOffset = { x: 100, y: 100, z: 100 }; // Same offset as in DirectionalLight.js
-
 directionalLight.target = player; // Set light target to player for dynamic shadows
 scene.add(directionalLight.target);  // required to add the target to scene (even though player is already added)
 // scene.add(directionalLight.helper); // Add helper to visualize light direction
 
 camera = Camera();
 renderer = Renderer();
+
+// Snap camera to player immediately to avoid initial zoom/lag
+setCameraTarget(camera, player.position.x, player.position.y, player.position.z, 1);
 
 // Initialize camera controls
 cameraControls = new CameraControls(camera, renderer.domElement);
@@ -154,6 +195,7 @@ document.querySelector("#audio-toggle")?.addEventListener("click", () => {
         }
     }
 });
+} // end of startGame
 
 // call before rendering or else empty map
 initializeGame();
@@ -183,12 +225,10 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
 });
 
-renderer.setAnimationLoop(animate);
-
 // Animation loop
 function animate() {
     const delta = clock.getDelta();
-    
+
     if(resultDOM.classList.contains("hidden")){
         animateVehicles();
         animatePlayer(player, camera); // Pass camera to player animation
@@ -243,12 +283,7 @@ function animate() {
     
     // Update camera to follow player with improved smoothing
     // Use a slightly higher value for more responsive but still smooth following
-    setCameraTarget(camera, position.currentX, position.currentY, 0, 0.12);
+    setCameraTarget(camera, position.currentX, position.currentY, 0, 0.06);
     
     renderer.render(scene, camera);
 }
-
-} // End of startGame function
-
-// The loading manager will now handle initialization through the start button
-
