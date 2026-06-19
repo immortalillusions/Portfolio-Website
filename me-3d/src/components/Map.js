@@ -74,11 +74,11 @@ export const otherObjects = new Map([
                 x: 8 * tileSize,
                 cardWidth: 200,
                 cardHeight: 150,
-                icon: ModelIcon(gloader,'/icons/ghost_w_tophat/scene.gltf', 15, 20, Math.PI/2),
-                url_link: "https://devpost.com/software/lil-ghost",
-                frontText: "LIL GHOST\nSmart Home\nSystem",
-                rightText: "Implemented an\nArduino\nprototype and\nwebsite that\nuses gestures\nto control\ndevices from a\ndistance,\nsuch as turning\non lights (LED)\nand adjusting\ntemperature\n(LCD) with the\nflick of a\nwrist ",
-                bottomLeftText: "Arduino\nESP32\nIMU\nRedis\nReact.js\nC++",
+                icon: ModelIcon(gloader,'/icons/calendar/scene.gltf', 15, 200, Math.PI/2),
+                url_link: "https://notlate.vercel.app/",
+                frontText: "NOT LATE\nPlanned for you\nto leave on cue",
+                rightText: "Built an\nevent-driven\nscheduler that\nauto-generates\na “leave-by”\ntravel block in\nGoogle Calendar\nalong with\npersonalized\nreminders",
+                bottomLeftText: "WebSockets\nWebhooks\nVercel Cron\nOAuth\nNext.js\nPostgreSQL",
                 rotation: [0,0, -Math.PI/2]
             },
             y: -7 * tileSize
@@ -121,11 +121,11 @@ export const otherObjects = new Map([
                 x: -8 * tileSize,
                 cardWidth: 200,
                 cardHeight: 150,
-                icon: ModelIcon(gloader,'/icons/robot/scene.gltf', 30, 100, Math.PI/2, Math.PI),
-                url_link: "https://devfortress.com/",
-                frontText: "DevFortress",
-                rightText: "Automated asset\ngeneration\nfor Google Meet\nextension\nwith 600K+\nusers using\nGemini &\nNode.js,\nsaving 90% time ",
-                bottomLeftText: "Backend\nSoftware\nEngineer\Intern",
+                icon: ModelIcon(gloader,'/icons/credit_card/scene.gltf', 40, 300, Math.PI/2, Math.PI),
+                url_link: "https://ramp.com/",
+                frontText: "Ramp\n(Growth -\nRecommendations\nTeam)",
+                rightText: "Developed agent\nwith persistent\ncontext via\nNotion MCP,\nautomating GTM\nfeature process\n\nOptimized\nreverse ETL\n(Hightouch) to\ncut task queue\nfrom 1,000 to\n200, monitoring\n with Datadog",
+                bottomLeftText: "Backend\nSoftware\nEngineer\nIntern",
                 rotation: [0,0, Math.PI/2]
             },
             y: -14 * tileSize
